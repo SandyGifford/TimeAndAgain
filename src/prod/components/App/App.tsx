@@ -9,7 +9,6 @@ export interface AppProps {
 
 const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const timeState = FantasyTimeState.useNewFantasyTimeState();
-	timeState.stop();
 	const playing = timeState.usePlaying();
 
 	return <timeState.Provider>
