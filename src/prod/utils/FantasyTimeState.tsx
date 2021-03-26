@@ -175,6 +175,10 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 		this.options = FantasyTimeState.completeOptions(options);
 	}
 
+	public setOptions = (options: FantasyTimeStateOptions<M, S>): void => {
+		this.options = options;
+	};
+
 	public useFantasyTime(precision?: number): FantasyTimeStateData<M, S> {
 		const ms = this.useTime(precision);
 		return this.msToFantasyTime(ms);
