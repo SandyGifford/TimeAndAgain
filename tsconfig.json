@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "ES2015",
+        "noUnusedLocals": true,
+        "noImplicitAny": false,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "esModuleInterop": true,
+        "alwaysStrict": true,
+        "jsx": "react",
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "allowJs": true,
+        "typeRoots": [ "./src/prod/typings", "./node_modules/@types" ],
+    },
+    "exclude": [ "dist", "*.js", "src/dev/components", "./__mocks__", "./tooling" ]
+}
