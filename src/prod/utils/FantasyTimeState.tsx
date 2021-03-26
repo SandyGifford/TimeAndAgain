@@ -61,7 +61,7 @@ const DEFAULT_OPTIONS: Required<FantasyTimeStateOptions<FantasyTimeStateDefaultM
 	secondsPerMinute: 60,
 	minutesPerHour: 60,
 	hoursPerDay: 24,
-	daysPerYear: 365,
+	daysPerYear: 365.2425,
 	months: fantasyTimeStateDefaultMonths,
 	seasons: fantasyTimeStateDefaultSeasons,
 };
@@ -74,6 +74,10 @@ function findYearSegmentIndex(dayOfYear: number, segments: FantasyTimeStateYearS
 }
 
 export default class FantasyTimeState<M extends string = FantasyTimeStateDefaultMonth, S extends string = FantasyTimeStateDefaultSeason> extends TimeState {
+	public static get EPOCH_OFFSET(): number {
+		return FantasyTimeState.yearToMS(1970, DEFAULT_OPTIONS);
+	}
+
 	protected static fantasyContext = React.createContext<FantasyTimeState>(null);
 
 	public static useNewFantasyTimeState<M extends string, S extends string>(options?: Partial<FantasyTimeStateOptions<M, S>>): FantasyTimeState<M, S> {

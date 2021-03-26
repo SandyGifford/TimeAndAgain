@@ -9,14 +9,9 @@ export interface AppProps {
 
 const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const timeState = FantasyTimeState.useNewFantasyTimeState({
-		startTime: {
-			second: 0,
-			minute: 47,
-			hour: 22,
-			dayOfYear: 84,
-			year: 2021,
-		},
+		startTime: FantasyTimeState.EPOCH_OFFSET + (new Date().getTime()),
 	});
+
 	const playing = timeState.usePlaying();
 
 	return <timeState.Provider>
