@@ -61,7 +61,7 @@ const DEFAULT_OPTIONS: Required<FantasyTimeStateOptions<FantasyTimeStateDefaultM
 	secondsPerMinute: 60,
 	minutesPerHour: 60,
 	hoursPerDay: 24,
-	daysPerYear: 365.2425,
+	daysPerYear: 365.23856,
 	months: fantasyTimeStateDefaultMonths,
 	seasons: fantasyTimeStateDefaultSeasons,
 };
