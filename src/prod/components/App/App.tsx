@@ -8,7 +8,19 @@ export interface AppProps {
 }
 
 const App: React.FunctionComponent<AppProps> = ({ className }) => {
-	const timeState = FantasyTimeState.useNewFantasyTimeState();
+	const timeState = FantasyTimeState.useNewFantasyTimeState({
+		daysPerYear: 8,
+		secondsPerMinute: 2,
+		minutesPerHour: 2,
+		hoursPerDay: 2,
+		months: [
+			{ name: "First", startDay: 0 },
+			{ name: "Second", startDay: 2 },
+			{ name: "Third", startDay: 4 },
+			{ name: "Forth", startDay: 6 },
+		],
+		seasons: [{ name: "the only season", startDay: 0 }],
+	});
 	const playing = timeState.usePlaying();
 
 	return <timeState.Provider>
