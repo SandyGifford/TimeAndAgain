@@ -13,7 +13,7 @@ export interface FantasyTimeStateOptions<M extends string, S extends string> {
 	daysPerYear?: number;
 	months?: FantasyTimeStateYearSegment<M>[];
 	seasons?: FantasyTimeStateYearSegment<S>[];
-	startTime?: number;
+	startTime?: number | EssentialFantasyTimeStateData;
 }
 
 export interface EssentialFantasyTimeStateData {
@@ -25,6 +25,7 @@ export interface EssentialFantasyTimeStateData {
 }
 export interface FantasyTimeStateData<M extends string, S extends string> extends EssentialFantasyTimeStateData {
 	epoch: number;
+	dayOfMonth: number;
 	monthNumber: number;
 	month: M;
 	seasonNumber: number;
@@ -117,9 +118,12 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 		const monthIndex = findYearSegmentIndex(dayOfYear, months);
 		const seasonIndex = findYearSegmentIndex(dayOfYear, seasons);
 
+		const dayOfMonth = dayOfYear - months[monthIndex].startDay;
+
 		return {
 			epoch: ms,
 			year,
+			dayOfMonth,
 			dayOfYear,
 			hour,
 			minute,
@@ -162,7 +166,11 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 	private options: FantasyTimeStateOptions<M, S>;
 
 	constructor(options: FantasyTimeStateOptions<M, S> = {}) {
-		super(options.startTime || 0);
+		super(
+			typeof options.startTime === "object" ?
+				FantasyTimeState.fantasyTimeToMS(options.startTime) :
+				(options.startTime || 0)
+		);
 
 		this.options = FantasyTimeState.completeOptions(options);
 	}

@@ -6,16 +6,16 @@ export interface ReadoutProps {
 	className?: string;
 }
 
+function padTo2(num: number): string {
+	let str = num + "";
+	while(str.length < 2) str = `0${str}`;
+	return str;
+}
+
 const Readout: React.FunctionComponent<ReadoutProps> = ({ className }) => {
-	const time = FantasyTimeState.useFantasyTime(1000);
+	const { season, month, dayOfMonth, year, hour, minute, second } = FantasyTimeState.useFantasyTime(1000);
 	return <div className={BEMUtils.className("Readout", { merge: [className] })}>
-		<div>year: {time.year}</div>
-		<div>dayOfYear: {time.dayOfYear}</div>
-		<div>hour: {time.hour}</div>
-		<div>minute: {time.minute}</div>
-		<div>second: {Math.floor(time.second)}</div>
-		<div>month: {time.month}</div>
-		<div>season: {time.season}</div>
+		({season}) {month} {dayOfMonth}, {year} @ {hour}:{padTo2(minute)}:{padTo2(Math.floor(second))}
 	</div>;
 };
 
