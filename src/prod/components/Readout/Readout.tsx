@@ -14,8 +14,9 @@ function padTo2(num: number): string {
 
 const Readout: React.FunctionComponent<ReadoutProps> = ({ className }) => {
 	const { season, month, dayOfMonth, year, hour, minute, second } = FantasyTimeState.useFantasyTime(1000);
+	const isAfternoon = hour > 12;
 	return <div className={BEMUtils.className("Readout", { merge: [className] })}>
-		({season}) {month} {dayOfMonth}, {year} @ {hour}:{padTo2(minute)}:{padTo2(Math.floor(second))}
+		({season}) {month} {dayOfMonth}, {year} @ {isAfternoon ? hour - 12 : hour}:{padTo2(minute)}:{padTo2(Math.floor(second))} {isAfternoon ? "PM" : "AM"}
 	</div>;
 };
 
