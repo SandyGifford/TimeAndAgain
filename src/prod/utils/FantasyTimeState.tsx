@@ -162,7 +162,7 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 
 	public static Provider<M extends string, S extends string>(props: {children: React.ReactNode, options?: FantasyTimeStateOptions<M, S>}): React.ReactElement {
 		const state = FantasyTimeState.useNewFantasyTimeState(props.options);
-		return <state.Provider>{props.children}</state.Provider>;
+		return state.Provider(props);
 	}
 
 	private static completeOptions<M extends string, S extends string>(options?: Partial<FantasyTimeStateOptions<M, S>>): Required<FantasyTimeStateOptions<M, S>> {
