@@ -6,11 +6,13 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import fs from "fs-extra";
 
 fs.removeSync(path.join(__dirname, "dist"));
+const isDev = process.env.NODE_ENV !== "production";
 
 const config: Configuration = {
 	mode: "development",
 	entry: {
 		"app": "./src/prod/index.tsx",
+		"dev": "./src/dev/scripts/dev.ts",
 	},
 	output: {
 		path: path.resolve(process.cwd(), "dist"),
@@ -34,6 +36,9 @@ const config: Configuration = {
 					"sass-loader",
 				],
 			},
+			{ test: /\.pug$/, use: [{
+				loader: "pug3-loader",
+			}] },
 		],
 	},
 	resolve: {
@@ -44,12 +49,18 @@ const config: Configuration = {
 		new MiniCssExtractPlugin({
 			filename: "css/[name].css",
 		}),
+		new HtmlWebpackPlugin({
+			template: "src/prod/pug/index.pug",
+			filename: "index.html",
+			templateParameters: {
+				isDev,
+			},
+		}),
 		new CopyWebpackPlugin({
 			patterns: [
 				{ from: "assets", to: "assets" },
 			],
 		}),
-		new HtmlWebpackPlugin(),
 	],
 };
 

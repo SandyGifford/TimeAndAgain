@@ -1,0 +1,6 @@
+- const isDev = htmlWebpackPlugin.options.templateParameters.isDev;
+
+head
+	link(rel="shortcut icon" type="image/png" href="assets/favicon.png")
+body
+	if (environment === "development")
