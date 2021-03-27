@@ -160,6 +160,11 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 	public static dayToMS = <M extends string, S extends string>(days: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.hourToMS(days || 0, options) * (options.hoursPerDay || DEFAULT_OPTIONS.hoursPerDay);
 	public static yearToMS = <M extends string, S extends string>(years: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.dayToMS(years || 0, options) * (options.daysPerYear || DEFAULT_OPTIONS.daysPerYear);
 
+	public static Provider<M extends string, S extends string>(props: {children: React.ReactNode, options?: FantasyTimeStateOptions<M, S>}): React.ReactElement {
+		const state = FantasyTimeState.useNewFantasyTimeState(props.options);
+		return <state.Provider>{props.children}</state.Provider>;
+	}
+
 	private static completeOptions<M extends string, S extends string>(options?: Partial<FantasyTimeStateOptions<M, S>>): Required<FantasyTimeStateOptions<M, S>> {
 		return {
 			...DEFAULT_OPTIONS as Required<FantasyTimeStateOptions<M, S>>,
@@ -209,6 +214,7 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 	}
 
 	public Provider = (props: {children: React.ReactNode}): React.ReactElement => {
-		return <FantasyTimeState.fantasyContext.Provider value={this as any}>{props.children}</FantasyTimeState.fantasyContext.Provider>;
+		const { fantasyContext: Context } = FantasyTimeState;
+		return <Context.Provider value={this as any}>{props.children}</Context.Provider>;
 	};
 }
