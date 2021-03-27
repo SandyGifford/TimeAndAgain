@@ -109,7 +109,8 @@ export default class TimeState {
 	};
 
 	public Provider = (props: {children: React.ReactNode}): React.ReactElement => {
-		return <TimeState.context.Provider value={this}>{props.children}</TimeState.context.Provider>;
+		const { context: Context } = TimeState;
+		return <Context.Provider value={this}>{props.children}</Context.Provider>;
 	};
 
 	private runFrame = (): void => {
