@@ -2,18 +2,24 @@
 
 .Timeline {
 	position: relative;
+	padding: 10px 0;
 
 	&__now {
 		position: absolute;
 		top: 0;
 		bottom: 0;
 		width: 1px;
-		background: rgba(0, 0, 0, 0.25);
+		background: rgba(0, 0, 0, 0.5);
 	}
 
 	&__line {
 		position: relative;
 		height: 1em;
+		margin-top: 2px;
+
+		&:first-child {
+			margin-top: 0;
+		}
 
 		&__event {
 			position: absolute;
@@ -21,16 +27,17 @@
 			height: 1em;
 			border-radius: 0.5em;
 			box-sizing: border-box;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
 
 			&__text {
 				position: absolute;
 				top: 50%;
 				left: 0.5em;
+				right: 0.5em;
 				font-size: 0.8em;
 				transform: translateY(-50%);
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
 			}
 		}
 	}
