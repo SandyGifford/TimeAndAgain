@@ -29,8 +29,14 @@ button {
 
 .App {
 	font-family: sans-serif;
-	display: flex;
-	flex-direction: column;
+
+	display: grid;
+	grid-template-areas:
+		"toolbar toolbar"
+		"sidebar timeline";
+	grid-template-rows: auto 1fr;
+	grid-template-columns: auto 1fr;
+
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -43,14 +49,26 @@ button {
 		background: transparent;
 	}
 
-	&__controls {
+	&__sidebar {
+		grid-area: sidebar;
+
+		&__button {
+			margin: 4px 0;
+		}
+	}
+
+	&__toolbar {
+		grid-area: toolbar;
 		display: flex;
-		flex: 0 0 auto;
 		font-size: 16px;
 
 		&__button {
 			flex: 0 0 auto;
 			margin: 0 2px;
+
+			&:first-child {
+				margin-left: 0;
+			}
 		}
 
 		&__divider {
@@ -62,6 +80,7 @@ button {
 	}
 
 	&__timeline {
-		flex: 1 1 auto;
+		grid-area: timeline;
+		transition: font-size 0.3s;
 	}
 }

@@ -8,9 +8,10 @@ import ReactUtils from "../../utils/ReactUtils";
 export interface TimelineProps {
 	className?: string;
 	msPerPixel: number;
+	style?: React.CSSProperties;
 }
 
-const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixel }) => {
+const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixel, style }) => {
 	const timeState = FantasyTimeState.useFantasyTimeState();
 	const [width, setWidth] = React.useState<number>(0);
 	const deltaT = width * msPerPixel;
@@ -42,7 +43,7 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 		setWidth(ref.current.offsetWidth);
 	});
 
-	return <div className={BEMUtils.className("Timeline", { merge: [className] })} ref={ref}>
+	return <div className={BEMUtils.className("Timeline", { merge: [className] })} ref={ref} style={style}>
 		{
 			eventStack.map((line, l) => <div className="Timeline__line" key={l}>{
 				line.map(({ color, name, startTime, duration }, e) => {
