@@ -4,13 +4,13 @@ import App from "./components/App/App";
 import { TimelineContext } from "./contexts";
 import { FantasyEvent } from "./typings/appData";
 import { StateDelegate } from "./utils/EventDelegate";
-import FantasyTimeState, { FantasyTimeStateOptions, FantasyTimeStateDefaultMonth, FantasyTimeStateDefaultSeason } from "./utils/FantasyTimeState";
+import FantasyTimeState, { FantasyTimeStateOptions } from "./utils/FantasyTimeState";
 
 const target = document.createElement("div");
 document.body.append(target);
 
 const START_TIME = FantasyTimeState.EPOCH_OFFSET + (new Date().getTime());
-const TIMESTATE_OPTIONS: FantasyTimeStateOptions<FantasyTimeStateDefaultMonth, FantasyTimeStateDefaultSeason> = {
+const TIMESTATE_OPTIONS: FantasyTimeStateOptions = {
 	startTime: START_TIME,
 };
 

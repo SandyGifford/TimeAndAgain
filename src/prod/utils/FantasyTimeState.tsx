@@ -1,18 +1,18 @@
 import TimeState from "./TimeState";
 import * as React from "react";
 
-export interface FantasyTimeStateYearSegment<N extends string> {
-	name: N;
+export interface FantasyTimeStateYearSegment {
+	name: string;
 	startDay: number;
 }
 
-export interface FantasyTimeStateOptions<M extends string, S extends string> {
+export interface FantasyTimeStateOptions {
 	secondsPerMinute?: number;
 	minutesPerHour?: number;
 	hoursPerDay?: number;
 	daysPerYear?: number;
-	months?: FantasyTimeStateYearSegment<M>[];
-	seasons?: FantasyTimeStateYearSegment<S>[];
+	months?: FantasyTimeStateYearSegment[];
+	seasons?: FantasyTimeStateYearSegment[];
 	startTime?: number | EssentialFantasyTimeStateData;
 }
 
@@ -23,17 +23,16 @@ export interface EssentialFantasyTimeStateData {
 	dayOfYear: number;
 	year: number;
 }
-export interface FantasyTimeStateData<M extends string, S extends string> extends EssentialFantasyTimeStateData {
+export interface FantasyTimeStateData extends EssentialFantasyTimeStateData {
 	epoch: number;
 	dayOfMonth: number;
 	monthNumber: number;
-	month: M;
+	month: string;
 	seasonNumber: number;
-	season: S;
+	season: string;
 }
 
-export type FantasyTimeStateDefaultMonth = "January" | "February" | "March" | "April" | "May" | "June" | "July" | "August" | "September" | "October" | "November" | "December";
-const fantasyTimeStateDefaultMonths: FantasyTimeStateYearSegment<FantasyTimeStateDefaultMonth>[] = [
+const fantasyTimeStateDefaultMonths: FantasyTimeStateYearSegment[] = [
 	/* 0 */ { name: "January", startDay: 0 },
 	/* 1 */ { name: "February", startDay: 31 },
 	/* 2 */ { name: "March", startDay: 28 + 31 }, // spring
@@ -48,15 +47,14 @@ const fantasyTimeStateDefaultMonths: FantasyTimeStateYearSegment<FantasyTimeStat
 	/* 11 */ { name: "December", startDay: 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 31 + 28 + 31 }, // winter
 ];
 
-export type FantasyTimeStateDefaultSeason = "summer" | "fall" | "winter" | "spring";
-const fantasyTimeStateDefaultSeasons: FantasyTimeStateYearSegment<FantasyTimeStateDefaultSeason>[] = [
+const fantasyTimeStateDefaultSeasons: FantasyTimeStateYearSegment[] = [
 	{ name: "spring", startDay: fantasyTimeStateDefaultMonths[2].startDay },
 	{ name: "summer", startDay: fantasyTimeStateDefaultMonths[5].startDay },
 	{ name: "fall", startDay: fantasyTimeStateDefaultMonths[8].startDay },
 	{ name: "winter", startDay: fantasyTimeStateDefaultMonths[11].startDay },
 ];
 
-const DEFAULT_OPTIONS: Required<FantasyTimeStateOptions<FantasyTimeStateDefaultMonth, FantasyTimeStateDefaultSeason>> = {
+const DEFAULT_OPTIONS: Required<FantasyTimeStateOptions> = {
 	startTime: 0,
 	secondsPerMinute: 60,
 	minutesPerHour: 60,
@@ -66,28 +64,28 @@ const DEFAULT_OPTIONS: Required<FantasyTimeStateOptions<FantasyTimeStateDefaultM
 	seasons: fantasyTimeStateDefaultSeasons,
 };
 
-function findYearSegmentIndex(dayOfYear: number, segments: FantasyTimeStateYearSegment<any>[]): number {
+function findYearSegmentIndex(dayOfYear: number, segments: FantasyTimeStateYearSegment[]): number {
 	return segments.findIndex((segment, i) => {
 		if (segments[i + 1]) return dayOfYear >= segment.startDay && dayOfYear < segments[i + 1].startDay;
 		else return true;
 	});
 }
 
-export default class FantasyTimeState<M extends string = FantasyTimeStateDefaultMonth, S extends string = FantasyTimeStateDefaultSeason> extends TimeState {
+export default class FantasyTimeState extends TimeState {
 	public static get EPOCH_OFFSET(): number {
 		return FantasyTimeState.yearToMS(1970, DEFAULT_OPTIONS);
 	}
 
 	protected static fantasyContext = React.createContext<FantasyTimeState>(null);
 
-	public static useNewFantasyTimeState<M extends string, S extends string>(options?: Partial<FantasyTimeStateOptions<M, S>>): FantasyTimeState<M, S> {
+	public static useNewFantasyTimeState(options?: Partial<FantasyTimeStateOptions>): FantasyTimeState {
 		const firstFrame = React.useRef(true);
 		const state = React.useRef(firstFrame.current ? new FantasyTimeState(options) : null);
 		firstFrame.current = false;
 		return state.current;
 	}
 
-	public static fantasyTimeToMS<M extends string, S extends string>(fTime: EssentialFantasyTimeStateData, options?: FantasyTimeStateOptions<M, S>): number {
+	public static fantasyTimeToMS(fTime: EssentialFantasyTimeStateData, options?: FantasyTimeStateOptions): number {
 		options = FantasyTimeState.completeOptions(options);
 
 		return (
@@ -99,7 +97,7 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 		);
 	}
 
-	public static msToFantasyTime<M extends string, S extends string>(ms: number, options?: FantasyTimeStateOptions<M, S>): FantasyTimeStateData<M, S> {
+	public static msToFantasyTime(ms: number, options?: FantasyTimeStateOptions): FantasyTimeStateData {
 		const { hoursPerDay, daysPerYear, months, seasons } = FantasyTimeState.completeOptions(options);
 		let remainingMS = ms;
 		const msPerDay = FantasyTimeState.hourToMS(hoursPerDay, options);
@@ -139,42 +137,42 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 		};
 	}
 
-	public static useFantasyTimeState<M extends string, S extends string>(): FantasyTimeState<M, S> {
+	public static useFantasyTimeState(): FantasyTimeState {
 		return React.useContext(FantasyTimeState.fantasyContext as any);
 	}
 
-	public static useFantasyTime<M extends string, S extends string>(precision?: number): FantasyTimeStateData<M, S> {
-		const state = FantasyTimeState.useFantasyTimeState<M, S>();
+	public static useFantasyTime(precision?: number): FantasyTimeStateData {
+		const state = FantasyTimeState.useFantasyTimeState();
 		return state.useFantasyTime(precision);
 	}
 
 	public static msToSecond = (ms: number): number => ms / 1000;
-	public static msToMinute = <M extends string, S extends string>(ms: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.msToSecond(ms || 0) / (options.secondsPerMinute || DEFAULT_OPTIONS.secondsPerMinute);
-	public static msToHour = <M extends string, S extends string>(ms: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.msToMinute(ms || 0, options) / (options.minutesPerHour || DEFAULT_OPTIONS.minutesPerHour);
-	public static msToDay = <M extends string, S extends string>(ms: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.msToHour(ms || 0, options) / (options.hoursPerDay || DEFAULT_OPTIONS.hoursPerDay);
-	public static msToYear = <M extends string, S extends string>(ms: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.msToDay(ms || 0, options) / (options.daysPerYear || DEFAULT_OPTIONS.daysPerYear);
+	public static msToMinute = (ms: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.msToSecond(ms || 0) / (options.secondsPerMinute || DEFAULT_OPTIONS.secondsPerMinute);
+	public static msToHour = (ms: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.msToMinute(ms || 0, options) / (options.minutesPerHour || DEFAULT_OPTIONS.minutesPerHour);
+	public static msToDay = (ms: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.msToHour(ms || 0, options) / (options.hoursPerDay || DEFAULT_OPTIONS.hoursPerDay);
+	public static msToYear = (ms: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.msToDay(ms || 0, options) / (options.daysPerYear || DEFAULT_OPTIONS.daysPerYear);
 
 	public static secondToMS = (seconds: number): number => seconds * 1000;
-	public static minuteToMS = <M extends string, S extends string>(minutes: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.secondToMS(minutes || 0) * (options.secondsPerMinute || DEFAULT_OPTIONS.secondsPerMinute);
-	public static hourToMS = <M extends string, S extends string>(hours: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.minuteToMS(hours || 0, options) * (options.minutesPerHour || DEFAULT_OPTIONS.minutesPerHour);
-	public static dayToMS = <M extends string, S extends string>(days: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.hourToMS(days || 0, options) * (options.hoursPerDay || DEFAULT_OPTIONS.hoursPerDay);
-	public static yearToMS = <M extends string, S extends string>(years: number, options: FantasyTimeStateOptions<M, S> = {}): number => FantasyTimeState.dayToMS(years || 0, options) * (options.daysPerYear || DEFAULT_OPTIONS.daysPerYear);
+	public static minuteToMS = (minutes: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.secondToMS(minutes || 0) * (options.secondsPerMinute || DEFAULT_OPTIONS.secondsPerMinute);
+	public static hourToMS = (hours: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.minuteToMS(hours || 0, options) * (options.minutesPerHour || DEFAULT_OPTIONS.minutesPerHour);
+	public static dayToMS = (days: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.hourToMS(days || 0, options) * (options.hoursPerDay || DEFAULT_OPTIONS.hoursPerDay);
+	public static yearToMS = (years: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.dayToMS(years || 0, options) * (options.daysPerYear || DEFAULT_OPTIONS.daysPerYear);
 
-	public static Provider<M extends string, S extends string>(props: {children: React.ReactNode, options?: FantasyTimeStateOptions<M, S>}): React.ReactElement {
+	public static Provider(props: {children: React.ReactNode, options?: FantasyTimeStateOptions}): React.ReactElement {
 		const state = FantasyTimeState.useNewFantasyTimeState(props.options);
 		return state.Provider(props);
 	}
 
-	private static completeOptions<M extends string, S extends string>(options?: Partial<FantasyTimeStateOptions<M, S>>): Required<FantasyTimeStateOptions<M, S>> {
+	private static completeOptions(options?: Partial<FantasyTimeStateOptions>): Required<FantasyTimeStateOptions> {
 		return {
-			...DEFAULT_OPTIONS as Required<FantasyTimeStateOptions<M, S>>,
+			...DEFAULT_OPTIONS as Required<FantasyTimeStateOptions>,
 			...options,
 		};
 	}
 
-	private options: FantasyTimeStateOptions<M, S>;
+	private options: FantasyTimeStateOptions;
 
-	constructor(options: FantasyTimeStateOptions<M, S> = {}) {
+	constructor(options: FantasyTimeStateOptions = {}) {
 		super(
 			typeof options.startTime === "object" ?
 				FantasyTimeState.fantasyTimeToMS(options.startTime) :
@@ -184,11 +182,11 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 		this.options = FantasyTimeState.completeOptions(options);
 	}
 
-	public setOptions = (options: FantasyTimeStateOptions<M, S>): void => {
+	public setOptions = (options: FantasyTimeStateOptions): void => {
 		this.options = options;
 	};
 
-	public useFantasyTime(precision?: number): FantasyTimeStateData<M, S> {
+	public useFantasyTime(precision?: number): FantasyTimeStateData {
 		const ms = this.useTime(precision);
 		return this.msToFantasyTime(ms);
 	}
@@ -205,7 +203,7 @@ export default class FantasyTimeState<M extends string = FantasyTimeStateDefault
 	public dayToMS = (days: number): number => FantasyTimeState.dayToMS(days, this.options);
 	public yearToMS = (years: number): number => FantasyTimeState.yearToMS(years, this.options);
 
-	public msToFantasyTime(milliseconds): FantasyTimeStateData<M, S> {
+	public msToFantasyTime(milliseconds): FantasyTimeStateData {
 		return FantasyTimeState.msToFantasyTime(milliseconds, this.options);
 	}
 
