@@ -13,6 +13,7 @@ export interface FantasyTimeStateOptions {
 	daysPerYear?: number;
 	months?: FantasyTimeStateYearSegment[];
 	seasons?: FantasyTimeStateYearSegment[];
+	daysOfWeek?: string[];
 	startTime?: number | EssentialFantasyTimeStateData;
 }
 
@@ -30,6 +31,8 @@ export interface FantasyTimeStateData extends EssentialFantasyTimeStateData {
 	month: string;
 	seasonNumber: number;
 	season: string;
+	dayOfWeek: string;
+	dayOfWeekNumber: number;
 }
 
 const fantasyTimeStateDefaultMonths: FantasyTimeStateYearSegment[] = [
@@ -59,9 +62,10 @@ const DEFAULT_OPTIONS: Required<FantasyTimeStateOptions> = {
 	secondsPerMinute: 60,
 	minutesPerHour: 60,
 	hoursPerDay: 24,
-	daysPerYear: 365.23856,
+	daysPerYear: 365.2526,
 	months: fantasyTimeStateDefaultMonths,
 	seasons: fantasyTimeStateDefaultSeasons,
+	daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 };
 
 function findYearSegmentIndex(dayOfYear: number, segments: FantasyTimeStateYearSegment[]): number {
@@ -98,7 +102,7 @@ export default class FantasyTimeState extends TimeState {
 	}
 
 	public static msToFantasyTime(ms: number, options?: FantasyTimeStateOptions): FantasyTimeStateData {
-		const { hoursPerDay, daysPerYear, months, seasons } = FantasyTimeState.completeOptions(options);
+		const { hoursPerDay, daysPerYear, months, seasons, daysOfWeek } = FantasyTimeState.completeOptions(options);
 		let remainingMS = ms;
 		const msPerDay = FantasyTimeState.hourToMS(hoursPerDay, options);
 		const msPerYear = msPerDay * daysPerYear;
@@ -121,6 +125,7 @@ export default class FantasyTimeState extends TimeState {
 		const seasonIndex = findYearSegmentIndex(dayOfYear, seasons);
 
 		const dayOfMonth = dayOfYear - months[monthIndex].startDay;
+		const dayOfWeekIndex = Math.floor(ms / msPerDay) % daysOfWeek.length;
 
 		return {
 			epoch: ms,
@@ -134,6 +139,8 @@ export default class FantasyTimeState extends TimeState {
 			seasonNumber: seasonIndex + 1,
 			month: options.months[monthIndex].name,
 			season: options.seasons[seasonIndex].name,
+			dayOfWeek: daysOfWeek[dayOfWeekIndex],
+			dayOfWeekNumber: dayOfWeekIndex + 1,
 		};
 	}
 
