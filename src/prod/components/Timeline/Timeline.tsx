@@ -17,9 +17,10 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className }) => {
 	const timeline = React.useContext(TimelineContext).useState();
 	const time = timeState.useTime();
 
-	// const startMS = time - deltaT * 0.25;
-	// const endMS = time + deltaT * 0.75;
-	const timeOffsetPX = deltaT * 0.25 / msPerPixel;
+	const startMSOffset = deltaT * 0.25;
+	const startMS = time - startMSOffset;
+	const endMS = time + deltaT * 0.75;
+	const timeOffsetPX = startMSOffset / msPerPixel;
 	const zeroPX = (-time / msPerPixel) + timeOffsetPX;
 	const eventStack: FantasyEvent[][] = [];
 
@@ -45,6 +46,7 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className }) => {
 		{
 			eventStack.map((line, l) => <div className="Timeline__line" key={l}>{
 				line.map(({ color, name, startTime, duration }, e) => {
+					if (startTime > endMS || (startTime + duration) < startMS) return null;
 					return <div
 						className="Timeline__line__event"
 						style={{
