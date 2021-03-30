@@ -1,6 +1,6 @@
 import * as React from "react";
 import BEMUtils from "../../utils/BEMUtils";
-import Readout from "../Readout/Readout";
+import Timeline from "../Timeline/Timeline";
 
 export interface AppProps {
 	className?: string;
@@ -9,7 +9,7 @@ export interface AppProps {
 const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	return <div
 		className={BEMUtils.className("App", { merge: [className] })}>
-		<Readout />
+		<Timeline />
 	</div>;
 };
 

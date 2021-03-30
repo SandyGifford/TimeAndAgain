@@ -32,7 +32,7 @@ export interface FantasyTimeStateData<M extends string, S extends string> extend
 	season: S;
 }
 
-type FantasyTimeStateDefaultMonth = "January" | "February" | "March" | "April" | "May" | "June" | "July" | "August" | "September" | "October" | "November" | "December";
+export type FantasyTimeStateDefaultMonth = "January" | "February" | "March" | "April" | "May" | "June" | "July" | "August" | "September" | "October" | "November" | "December";
 const fantasyTimeStateDefaultMonths: FantasyTimeStateYearSegment<FantasyTimeStateDefaultMonth>[] = [
 	/* 0 */ { name: "January", startDay: 0 },
 	/* 1 */ { name: "February", startDay: 31 },
@@ -48,7 +48,7 @@ const fantasyTimeStateDefaultMonths: FantasyTimeStateYearSegment<FantasyTimeStat
 	/* 11 */ { name: "December", startDay: 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 31 + 28 + 31 }, // winter
 ];
 
-type FantasyTimeStateDefaultSeason = "summer" | "fall" | "winter" | "spring";
+export type FantasyTimeStateDefaultSeason = "summer" | "fall" | "winter" | "spring";
 const fantasyTimeStateDefaultSeasons: FantasyTimeStateYearSegment<FantasyTimeStateDefaultSeason>[] = [
 	{ name: "spring", startDay: fantasyTimeStateDefaultMonths[2].startDay },
 	{ name: "summer", startDay: fantasyTimeStateDefaultMonths[5].startDay },

@@ -1,6 +1,8 @@
 @import "../../misc/theme.scss";
 
 .App {
+	font-family: sans-serif;
+
 	&--playing {
 		background: transparent;
 	}
