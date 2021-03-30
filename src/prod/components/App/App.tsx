@@ -17,8 +17,8 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 
 	return <div className={BEMUtils.className("App", { merge: [className] })}>
 		<div className="App__sidebar">
-			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize / 2)}>-</button>
 			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize * 2)}>+</button>
+			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize / 2)}>-</button>
 		</div>
 		<div className="App__toolbar">
 			<button className="App__toolbar__button" onClick={() => setMSPerPixel(msPerPixel * 2)}>-</button>
