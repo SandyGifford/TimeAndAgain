@@ -6,4 +6,16 @@
 	&--playing {
 		background: transparent;
 	}
+
+	&__controls {
+		display: flex;
+
+		&__button { flex: 0 0 auto; }
+		&__divider {
+			flex: 0 0 auto;
+			width: 1px;
+			background: #999;
+			margin: 0 10px;
+		}
+	}
 }
