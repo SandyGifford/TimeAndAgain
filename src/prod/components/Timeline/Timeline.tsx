@@ -7,12 +7,12 @@ import ReactUtils from "../../utils/ReactUtils";
 
 export interface TimelineProps {
 	className?: string;
+	msPerPixel: number;
 }
 
-const Timeline: React.FunctionComponent<TimelineProps> = ({ className }) => {
+const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixel }) => {
 	const timeState = FantasyTimeState.useFantasyTimeState();
 	const [width, setWidth] = React.useState<number>(0);
-	const [msPerPixel] = React.useState(timeState.minuteToMS(1) / 100);
 	const deltaT = width * msPerPixel;
 	const timeline = React.useContext(TimelineContext).useState();
 	const time = timeState.useTime();
