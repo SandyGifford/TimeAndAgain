@@ -12,33 +12,23 @@
 		background: rgba(0, 0, 0, 0.5);
 	}
 
-	&__line {
-		position: relative;
+	&__event {
+		position: absolute;
+		top: 0;
 		height: 1em;
-		margin-top: 2px;
+		border-radius: 0.5em;
+		box-sizing: border-box;
 
-		&:first-child {
-			margin-top: 0;
-		}
-
-		&__event {
+		&__text {
 			position: absolute;
-			top: 0;
-			height: 1em;
-			border-radius: 0.5em;
-			box-sizing: border-box;
-
-			&__text {
-				position: absolute;
-				top: 50%;
-				left: 0.5em;
-				right: 0.5em;
-				font-size: 0.8em;
-				transform: translateY(-50%);
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
+			top: 50%;
+			left: 0.5em;
+			right: 0.5em;
+			font-size: 0.8em;
+			transform: translateY(-50%);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	}
 }

@@ -45,23 +45,22 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 
 	return <div className={BEMUtils.className("Timeline", { merge: [className] })} ref={ref} style={style}>
 		{
-			eventStack.map((line, l) => <div className="Timeline__line" key={l}>{
-				line.map(({ color, name, startTime, duration }, e) => {
-					if (startTime > endMS || (startTime + duration) < startMS) return null;
-					return <div
-						className="Timeline__line__event"
-						style={{
-							background: color,
-							left: (startTime / msPerPixel) + zeroPX,
-							width: (duration / msPerPixel),
-						}}
-						key={e}>
-						<div className="Timeline__line__event__text">
-							{name}
-						</div>
-					</div>;
-				})
-			}</div>)
+			eventStack.map((line, l) => line.map(({ color, name, startTime, duration, id }) => {
+				if (startTime > endMS || (startTime + duration) < startMS) return null;
+				return <div
+					className="Timeline__event"
+					style={{
+						background: color,
+						left: (startTime / msPerPixel) + zeroPX,
+						width: (duration / msPerPixel),
+						top: `${l * 1.1}em`,
+					}}
+					key={id}>
+					<div className="Timeline__event__text">
+						{name}
+					</div>
+				</div>;
+			}))
 		}
 		<div
 			className="Timeline__now"
