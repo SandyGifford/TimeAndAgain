@@ -11,7 +11,7 @@ export interface AppProps {
 const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const timeState = FantasyTimeState.useFantasyTimeState();
 	const [msPerPixel, setMSPerPixel] = React.useState(timeState.minuteToMS(1) / 100);
-	const [timelineFontSize, setTimelineFontSize] = React.useState(12);
+	const [timelineFontSize, setTimelineFontSize] = React.useState(24);
 	const dispMsPerPixel = ReactUtils.useAnimateValue(msPerPixel, 300);
 	const playing = timeState.usePlaying();
 

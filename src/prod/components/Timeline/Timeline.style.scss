@@ -13,22 +13,5 @@
 	}
 
 	&__event {
-		position: absolute;
-		top: 0;
-		height: 1em;
-		border-radius: 0.5em;
-		box-sizing: border-box;
-
-		&__text {
-			position: absolute;
-			top: 50%;
-			left: 0.5em;
-			right: 0.5em;
-			font-size: 0.8em;
-			transform: translateY(-50%);
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
 	}
 }

@@ -4,6 +4,7 @@ import { FantasyEvent } from "../../typings/appData";
 import BEMUtils from "../../utils/BEMUtils";
 import FantasyTimeState from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
+import TimelineEvent from "../TimelineEvent/TimelineEvent";
 
 export interface TimelineProps {
 	className?: string;
@@ -45,21 +46,19 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 
 	return <div className={BEMUtils.className("Timeline", { merge: [className] })} ref={ref} style={style}>
 		{
-			eventStack.map((line, l) => line.map(({ color, name, startTime, duration, id }) => {
+			eventStack.map((line, l) => line.map((event) => {
+				const { startTime, duration, id } = event;
+
 				if (startTime > endMS || (startTime + duration) < startMS) return null;
-				return <div
+				return <TimelineEvent
 					className="Timeline__event"
+					event={event}
+					zeroPX={zeroPX}
+					msPerPixel={msPerPixel}
 					style={{
-						background: color,
-						left: (startTime / msPerPixel) + zeroPX,
-						width: (duration / msPerPixel),
 						top: `${l * 1.1}em`,
 					}}
-					key={id}>
-					<div className="Timeline__event__text">
-						{name}
-					</div>
-				</div>;
+					key={id} />;
 			}))
 		}
 		<div
