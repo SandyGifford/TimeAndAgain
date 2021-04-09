@@ -14,8 +14,11 @@ export interface TimelineProps {
 
 const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixel, style }) => {
 	const timeState = FantasyTimeState.useFantasyTimeState();
-	const [width, setWidth] = React.useState<number>(0);
-	const deltaT = width * msPerPixel;
+	const [offsets, setOffsets] = React.useState<{width: number; left: number;}>({
+		left: 0,
+		width: window.innerWidth,
+	});
+	const deltaT = offsets.width * msPerPixel;
 	const timeline = React.useContext(TimelineContext).useState();
 	const time = timeState.useTime();
 
@@ -41,7 +44,7 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 	});
 
 	const ref = ReactUtils.useResizeObserver<HTMLDivElement>(() => {
-		setWidth(ref.current.offsetWidth);
+		setOffsets(ref.current.getBoundingClientRect());
 	});
 
 	return <div className={BEMUtils.className("Timeline", { merge: [className] })} ref={ref} style={style}>
@@ -52,6 +55,8 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 				if (startTime > endMS || (startTime + duration) < startMS) return null;
 				return <TimelineEvent
 					className="Timeline__event"
+					timelineLeftOffset={offsets.left}
+					timelineRightOffset={offsets.width + offsets.left}
 					event={event}
 					zeroPX={zeroPX}
 					msPerPixel={msPerPixel}
