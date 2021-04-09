@@ -2,6 +2,7 @@ import * as React from "react";
 import { FantasyEvent } from "../../typings/appData";
 import BEMUtils from "../../utils/BEMUtils";
 import ColorUtils from "../../utils/ColorUtils";
+import ReactUtils from "../../utils/ReactUtils";
 
 export interface TimelineEventProps extends Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "children"> {
 	event: FantasyEvent;
@@ -21,8 +22,11 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 	timelineRightOffset,
 	...divProps
 }) => {
-	const hsl = ColorUtils.cssToRGB(color);
-	hsl.a = 0.25;
+	const bgColor = ReactUtils.useTransformedValue(color, color => {
+		const hsl = ColorUtils.cssToRGB(color);
+		hsl.a = 0.25;
+		return ColorUtils.getCSSColor(hsl);
+	});
 	const contentRef = React.useRef<HTMLDivElement>();
 	const [textEdges, setTextEdges] = React.useState({ left: 0, right: 0 });
 
@@ -39,7 +43,7 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 		{...divProps}
 		style={{
 			borderColor: color,
-			backgroundColor: ColorUtils.getCSSColor(hsl),
+			backgroundColor: bgColor,
 			left: (startTime / msPerPixel) + zeroPX,
 			width: (duration / msPerPixel),
 			...style,

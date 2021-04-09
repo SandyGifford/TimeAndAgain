@@ -19,6 +19,28 @@ export default class ReactUtils {
 		return ref;
 	}
 
+	public static useIsFirstFrame(): boolean {
+		const firstFrame = React.useRef(true);
+		const val = firstFrame.current;
+		firstFrame.current = false;
+		return val;
+	}
+
+	public static useTransformedValue<T, R>(val: T, transformer: (val: T) => R, deps?: React.DependencyList): R {
+		const firstFrame = ReactUtils.useIsFirstFrame();
+
+		let initial: R;
+		if (firstFrame) initial = transformer(val);
+
+		const [sVal, setSVal] = React.useState<R>(initial);
+
+		React.useEffect(() => {
+			setSVal(transformer(val));
+		}, deps || [val]);
+
+		return sVal;
+	}
+
 	public static useAnimateValue(value: number, time = 1000): number {
 		const [dispVal, setDispVal] = React.useState(value);
 		const dispValRef = React.useRef(dispVal);
