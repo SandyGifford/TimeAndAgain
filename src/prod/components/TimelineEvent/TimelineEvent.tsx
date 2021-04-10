@@ -31,7 +31,8 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 	const [textEdges, setTextEdges] = React.useState({ left: 0, right: 0 });
 
 	React.useEffect(() => {
-		let { left, right } = textEdges;
+		let left = 0;
+		let right = 0;
 		const rect = contentRef.current.getBoundingClientRect();
 		if (rect.left < timelineLeftOffset) left = -rect.left;
 		if (rect.right > timelineRightOffset) right = rect.right - timelineRightOffset;
