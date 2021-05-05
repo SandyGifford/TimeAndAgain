@@ -5,10 +5,10 @@
 
 	display: grid;
 	grid-template-areas:
-		"toolbar toolbar"
-		"sidebar timeline";
+		"toolbar"
+		"content";
 	grid-template-rows: auto 1fr;
-	grid-template-columns: auto 1fr;
+	grid-template-columns: auto;
 
 	position: absolute;
 	top: 0;
@@ -16,15 +16,19 @@
 	right: 0;
 	bottom: 0;
 	overflow: hidden;
-	padding: 10px;
 
 	&--playing {
 		background: transparent;
 	}
 
-	&__sidebar {
+	&__sidebar,
+	&__toolbar {
+		padding: 10px;
 		z-index: 1;
-		grid-area: sidebar;
+	}
+
+	&__sidebar {
+		grid-area: content;
 
 		&__button {
 			margin: 4px 0;
@@ -32,7 +36,6 @@
 	}
 
 	&__toolbar {
-		z-index: 1;
 		grid-area: toolbar;
 		display: flex;
 		font-size: 16px;
@@ -72,7 +75,7 @@
 	}
 
 	&__timeline {
-		grid-area: timeline;
+		grid-area: content;
 		transition: font-size 0.3s;
 		z-index: 0;
 	}
