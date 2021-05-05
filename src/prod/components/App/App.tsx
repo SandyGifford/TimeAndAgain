@@ -38,13 +38,18 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 					className="App__toolbar__skip__interval"
 					type="number"
 					value={skipInterval}
-					onChange={e => setSkipInterval(parseFloat(e.target.value))} />
+					onChange={e => {
+						const val = parseFloat(e.target.value);
+						if (!isNaN(val)) setSkipInterval(val);
+					}} />
 				<select
 					className="App__toolbar__skip__unit"
 					onChange={e => setSkipUnit(e.target.value as SkipUnit)}
-					value={skipUnit}>{
+					value={skipUnit}>
+					{
 						SKIP_UNITS.map(unit => <option value={unit} key={unit}>{unit}{skipInterval === 1 ? "" : "s"}</option>)
-					}</select>
+					}
+				</select>
 				<button
 					className="App__toolbar__skip__button"
 					onClick={() => {
