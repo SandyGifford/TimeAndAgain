@@ -46,7 +46,16 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 						SKIP_UNITS.map(unit => <option value={unit} key={unit}>{unit}{skipInterval === 1 ? "" : "s"}</option>)
 					}</select>
 				<button
-					className="App__toolbar__skip__unit__button"
+					className="App__toolbar__skip__button"
+					onClick={() => {
+						timeState.addFantasyTime({
+							[skipUnit]: -skipInterval,
+						});
+					}}>
+					<Icon icon="step-backward" />
+				</button>
+				<button
+					className="App__toolbar__skip__button"
 					onClick={() => {
 						timeState.addFantasyTime({
 							[skipUnit]: skipInterval,
