@@ -1,12 +1,13 @@
 import * as React from "react";
 import { StateDelegate } from "./EventDelegate";
 
-export type TimeStateListener = (time: number) => void;
+export type TimeStateTime = [number, number];
+export type TimeStateListener = (time: TimeStateTime) => void;
 
 interface TimeStateHandler {
 	precision?: number;
 	lastTime: number;
-	listener(time: number, dt: number): void;
+	listener: TimeStateListener;
 }
 
 export default class TimeState {
@@ -33,7 +34,7 @@ export default class TimeState {
 		state.useListener(listener, precision);
 	}
 
-	public static useTime(precision?: number): number {
+	public static useTime(precision?: number): TimeStateTime {
 		const state = TimeState.useTimeState();
 		return state.useTime(precision);
 	}
@@ -69,9 +70,9 @@ export default class TimeState {
 		this.trigger(ms);
 	};
 
-	public useTime = (precision = 0): number => {
-		const [time, setTime] = React.useState<number>(this.time);
-		const listener = React.useCallback(time => setTime(time), []);
+	public useTime = (precision = 0): TimeStateTime => {
+		const [time, setTime] = React.useState<TimeStateTime>([this.time, 0]);
+		const listener = React.useCallback<TimeStateListener>(time => setTime(time), []);
 		this.useListener(listener, precision);
 		return time;
 	};
@@ -132,7 +133,7 @@ export default class TimeState {
 	};
 
 	private trigger(time: number): void {
-		const dt = this.accumulatedTime - time;
+		const dt = time - this.accumulatedTime;
 		this.accumulatedTime = time;
 
 		this.handlers.forEach(handler => {
@@ -141,7 +142,7 @@ export default class TimeState {
 			const flooredLastTime = Math.floor(lastTime / precision);
 
 			if (flooredTime !== flooredLastTime) {
-				listener(time, dt);
+				listener([time, dt]);
 				handler.lastTime = flooredTime * precision;
 			}
 		});

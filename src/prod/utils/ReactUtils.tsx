@@ -41,6 +41,14 @@ export default class ReactUtils {
 		return sVal;
 	}
 
+	public static useDampenNumber(value: number, maxNumPerS: number): number {
+		const lastValueRef = React.useRef(value);
+		const diff = value - lastValueRef.current;
+		lastValueRef.current = value;
+		const ms = diff / (maxNumPerS / 1000);
+		return this.useAnimateValue(value, ms);
+	}
+
 	public static useAnimateValue(value: number, time = 1000): number {
 		const [dispVal, setDispVal] = React.useState(value);
 		const dispValRef = React.useRef(dispVal);
@@ -66,7 +74,7 @@ export default class ReactUtils {
 			}
 			frame(performance.now());
 			return () => cancelAnimationFrame(animRef);
-		}, [value]);
+		}, [value, time]);
 
 		return dispVal;
 	}

@@ -20,13 +20,14 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 	});
 	const deltaT = offsets.width * msPerPixel;
 	const timeline = React.useContext(TimelineContext).useState();
-	const time = timeState.useTime();
+	const [time, dt] = timeState.useTime();
+	const animTime = ReactUtils.useAnimateValue(time, Math.abs(dt) > 500 ? 100 : 0);
 
 	const startMSOffset = deltaT * 0.25;
-	const startMS = time - startMSOffset;
-	const endMS = time + deltaT * 0.75;
+	const startMS = animTime - startMSOffset;
+	const endMS = animTime + deltaT * 0.75;
 	const timeOffsetPX = startMSOffset / msPerPixel;
-	const zeroPX = (-time / msPerPixel) + timeOffsetPX;
+	const zeroPX = (-animTime / msPerPixel) + timeOffsetPX;
 	const eventStack: FantasyEvent[][] = [];
 
 	timeline.forEach(event => {
@@ -44,7 +45,8 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 	});
 
 	const ref = ReactUtils.useResizeObserver<HTMLDivElement>(() => {
-		setOffsets(ref.current.getBoundingClientRect());
+		const { left, width } = ref.current.getBoundingClientRect();
+		if (offsets.width !== width || offsets.left !== left) setOffsets({ left, width });
 	});
 
 	return <div className={BEMUtils.className("Timeline", { merge: [className] })} ref={ref} style={style}>
