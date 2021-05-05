@@ -61,6 +61,14 @@ export default class TimeState {
 		this.accumulatedTime = startTime;
 	}
 
+	public addTime = (ms: number): void => {
+		this.setTime(this.accumulatedTime + ms);
+	};
+
+	public setTime = (ms: number): void => {
+		this.trigger(ms);
+	};
+
 	public useTime = (precision = 0): number => {
 		const [time, setTime] = React.useState<number>(this.time);
 		const listener = React.useCallback(time => setTime(time), []);
@@ -119,7 +127,14 @@ export default class TimeState {
 	private frame: FrameRequestCallback = timeSinceRun => {
 		const dt = timeSinceRun - this.lastTime;
 		this.lastTime = timeSinceRun;
-		const time = this.accumulatedTime += dt;
+		this.trigger(this.accumulatedTime + dt);
+		this.runFrame();
+	};
+
+	private trigger(time: number): void {
+		const dt = this.accumulatedTime - time;
+		this.accumulatedTime = time;
+
 		this.handlers.forEach(handler => {
 			const { listener, precision, lastTime } = handler;
 			const flooredTime = Math.floor(time / precision);
@@ -130,6 +145,5 @@ export default class TimeState {
 				handler.lastTime = flooredTime * precision;
 			}
 		});
-		this.runFrame();
-	};
+	}
 }

@@ -17,6 +17,14 @@ export interface FantasyTimeStateOptions {
 	startTime?: number | EssentialFantasyTimeStateData;
 }
 
+export interface RelativeFantasyTimeStateData {
+	millisecond?: number;
+	second?: number;
+	minute?: number;
+	hour?: number;
+	day?: number;
+	year?: number;
+}
 export interface EssentialFantasyTimeStateData {
 	second: number;
 	minute: number;
@@ -24,6 +32,7 @@ export interface EssentialFantasyTimeStateData {
 	dayOfYear: number;
 	year: number;
 }
+
 export interface FantasyTimeStateData extends EssentialFantasyTimeStateData {
 	epoch: number;
 	dayOfMonth: number;
@@ -170,6 +179,27 @@ export default class FantasyTimeState extends TimeState {
 		return state.Provider(props);
 	}
 
+	private static completeRelative(fTime: RelativeFantasyTimeStateData): Required<RelativeFantasyTimeStateData> {
+		return {
+			millisecond: 0,
+			second: 0,
+			minute: 0,
+			hour: 0,
+			day: 0,
+			year: 0,
+			...fTime,
+		};
+	}
+
+	private static relativeToEssential(fTime: RelativeFantasyTimeStateData): EssentialFantasyTimeStateData {
+		const { millisecond, day, second, ...rest } = FantasyTimeState.completeRelative(fTime);
+		return {
+			...rest,
+			dayOfYear: day,
+			second: second + FantasyTimeState.msToSecond(millisecond),
+		};
+	}
+
 	private static completeOptions(options?: Partial<FantasyTimeStateOptions>): Required<FantasyTimeStateOptions> {
 		return {
 			...DEFAULT_OPTIONS as Required<FantasyTimeStateOptions>,
@@ -209,6 +239,14 @@ export default class FantasyTimeState extends TimeState {
 	public hourToMS = (hours: number): number => FantasyTimeState.hourToMS(hours, this.options);
 	public dayToMS = (days: number): number => FantasyTimeState.dayToMS(days, this.options);
 	public yearToMS = (years: number): number => FantasyTimeState.yearToMS(years, this.options);
+
+	public setFantasyTime(fTime: RelativeFantasyTimeStateData): void {
+		this.setTime(this.fantasyTimeToMS(FantasyTimeState.relativeToEssential(fTime)));
+	}
+
+	public addFantasyTime(fTime: RelativeFantasyTimeStateData): void {
+		this.addTime(this.fantasyTimeToMS(FantasyTimeState.relativeToEssential(fTime)));
+	}
 
 	public msToFantasyTime(milliseconds): FantasyTimeStateData {
 		return FantasyTimeState.msToFantasyTime(milliseconds, this.options);
