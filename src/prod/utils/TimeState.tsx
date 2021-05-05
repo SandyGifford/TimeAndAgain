@@ -59,7 +59,6 @@ export default class TimeState {
 
 	constructor(startTime?: number) {
 		this.accumulatedTime = startTime;
-		this.start();
 	}
 
 	public useTime = (precision = 0): number => {
