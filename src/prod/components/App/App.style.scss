@@ -37,36 +37,6 @@
 
 	&__toolbar {
 		grid-area: toolbar;
-		display: flex;
-		font-size: 16px;
-
-		&__skip {
-			margin-left: 10px;
-			display: flex;
-			align-items: center;
-
-			&__input,
-			&__button {
-				flex: 0 0 auto;
-				margin: 0 2px;
-			}
-		}
-
-		&__button {
-			flex: 0 0 auto;
-			margin: 0 2px;
-
-			&:first-child {
-				margin-left: 0;
-			}
-		}
-
-		&__divider {
-			flex: 0 0 auto;
-			width: 1px;
-			background: #999;
-			margin: 0 10px;
-		}
 	}
 
 	&__timeline {

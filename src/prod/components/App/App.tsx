@@ -5,6 +5,8 @@ import ReactUtils from "../../utils/ReactUtils";
 import Icon from "../Icon/Icon";
 import TimeInput, { TimeInputUnit } from "../TimeInput/TimeInput";
 import Timeline from "../Timeline/Timeline";
+import Toolbar from "../Toolbar/Toolbar";
+import ToolbarGroup from "../ToolbarGroup/ToolbarGroup";
 
 export interface AppProps {
 	className?: string;
@@ -24,22 +26,25 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize * 2)}><Icon icon="plus" /></button>
 			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize / 2)}><Icon icon="minus" /></button>
 		</div>
-		<div className="App__toolbar">
-			<button className="App__toolbar__button" onClick={() => setMSPerPixel(msPerPixel * 2)}><Icon icon="minus" /></button>
-			<button className="App__toolbar__button" onClick={() => setMSPerPixel(msPerPixel / 2)}><Icon icon="plus" /></button>
-			<div className="App__toolbar__divider" />
-			<button className="App__toolbar__button" onClick={() => playing ? timeState.stop() : timeState.start()}>
-				{playing ? <Icon icon="pause" /> : <Icon icon="play" />}
-			</button>
-			<div className="App__toolbar__skip">
+		<Toolbar className="App__toolbar">
+			<ToolbarGroup header="timescale">
+				<button className="App__toolbar__group__button" onClick={() => setMSPerPixel(msPerPixel * 2)}><Icon icon="minus" /></button>
+				<button className="App__toolbar__group__button" onClick={() => setMSPerPixel(msPerPixel / 2)}><Icon icon="plus" /></button>
+			</ToolbarGroup>
+			<ToolbarGroup>
+				<button className="App__toolbar__group__button" onClick={() => playing ? timeState.stop() : timeState.start()}>
+					{playing ? <Icon icon="pause" /> : <Icon icon="play" />}
+				</button>
+			</ToolbarGroup>
+			<ToolbarGroup header="skip controls">
 				<TimeInput
-					className="App__toolbar__skip__input"
+					className="App__toolbar__group__input"
 					value={skipInterval}
 					unit={skipUnit}
 					onValueChange={setSkipInterval}
 					onUnitChange={setSkipUnit} />
 				<button
-					className="App__toolbar__skip__button"
+					className="App__toolbar__group__button"
 					onClick={() => {
 						timeState.addFantasyTime({
 							[skipUnit]: -skipInterval,
@@ -48,7 +53,7 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 					<Icon icon="step-backward" />
 				</button>
 				<button
-					className="App__toolbar__skip__button"
+					className="App__toolbar__group__button"
 					onClick={() => {
 						timeState.addFantasyTime({
 							[skipUnit]: skipInterval,
@@ -56,8 +61,8 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 					}}>
 					<Icon icon="step-forward" />
 				</button>
-			</div>
-		</div>
+			</ToolbarGroup>
+		</Toolbar>
 		<Timeline
 			className="App__timeline"
 			style={{
