@@ -1,0 +1,16 @@
+@import "../../misc/theme.scss";
+
+.TimeInput {
+	display: flex;
+	align-items: center;
+
+	&__unit,
+	&__value {
+		flex: 0 0 auto;
+		margin: 0 2px;
+	}
+
+	&__value {
+		width: 75px;
+	}
+}

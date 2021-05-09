@@ -45,15 +45,10 @@
 			display: flex;
 			align-items: center;
 
-			&__unit,
-			&__interval,
+			&__input,
 			&__button {
 				flex: 0 0 auto;
 				margin: 0 2px;
-			}
-
-			&__interval {
-				width: 75px;
 			}
 		}
 

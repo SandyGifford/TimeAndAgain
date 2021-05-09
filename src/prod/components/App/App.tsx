@@ -1,16 +1,14 @@
 import * as React from "react";
 import BEMUtils from "../../utils/BEMUtils";
-import FantasyTimeState, { RelativeFantasyTimeStateData } from "../../utils/FantasyTimeState";
+import FantasyTimeState from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
 import Icon from "../Icon/Icon";
+import TimeInput, { TimeInputUnit } from "../TimeInput/TimeInput";
 import Timeline from "../Timeline/Timeline";
 
 export interface AppProps {
 	className?: string;
 }
-
-type SkipUnit = keyof RelativeFantasyTimeStateData;
-const SKIP_UNITS: SkipUnit[] = ["millisecond", "second", "minute", "hour", "day", "year"];
 
 const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const timeState = FantasyTimeState.useFantasyTimeState();
@@ -19,7 +17,7 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const dispMsPerPixel = ReactUtils.useAnimateValue(msPerPixel, 300);
 	const playing = timeState.usePlaying();
 	const [skipInterval, setSkipInterval] = React.useState(1);
-	const [skipUnit, setSkipUnit] = React.useState<SkipUnit>("minute");
+	const [skipUnit, setSkipUnit] = React.useState<TimeInputUnit>("minute");
 
 	return <div className={BEMUtils.className("App", { merge: [className] })}>
 		<div className="App__sidebar">
@@ -34,22 +32,12 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 				{playing ? <Icon icon="pause" /> : <Icon icon="play" />}
 			</button>
 			<div className="App__toolbar__skip">
-				<input
-					className="App__toolbar__skip__interval"
-					type="number"
+				<TimeInput
+					className="App__toolbar__skip__input"
 					value={skipInterval}
-					onChange={e => {
-						const val = parseFloat(e.target.value);
-						if (!isNaN(val)) setSkipInterval(val);
-					}} />
-				<select
-					className="App__toolbar__skip__unit"
-					onChange={e => setSkipUnit(e.target.value as SkipUnit)}
-					value={skipUnit}>
-					{
-						SKIP_UNITS.map(unit => <option value={unit} key={unit}>{unit}{skipInterval === 1 ? "" : "s"}</option>)
-					}
-				</select>
+					unit={skipUnit}
+					onValueChange={setSkipInterval}
+					onUnitChange={setSkipUnit} />
 				<button
 					className="App__toolbar__skip__button"
 					onClick={() => {
