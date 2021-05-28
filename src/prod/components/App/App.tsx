@@ -1,9 +1,11 @@
 import * as React from "react";
+import { TimelineContext } from "../../contexts";
 import BEMUtils from "../../utils/BEMUtils";
-import FantasyTimeState from "../../utils/FantasyTimeState";
+import DataUtils from "../../utils/DataUtils";
+import FantasyTimeState, { FantasyTimeFixedUnit } from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
 import Icon from "../Icon/Icon";
-import TimeInput, { TimeInputUnit } from "../TimeInput/TimeInput";
+import TimeInput from "../TimeInput/TimeInput";
 import Timeline from "../Timeline/Timeline";
 import Toolbar from "../Toolbar/Toolbar";
 import ToolbarGroup from "../ToolbarGroup/ToolbarGroup";
@@ -18,8 +20,22 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const [timelineFontSize, setTimelineFontSize] = React.useState(24);
 	const dispMsPerPixel = ReactUtils.useAnimateValue(msPerPixel, 300);
 	const playing = timeState.usePlaying();
-	const [skipInterval, setSkipInterval] = React.useState(1);
-	const [skipUnit, setSkipUnit] = React.useState<TimeInputUnit>("minute");
+	const [skipTime, setSkipTime] = React.useState(1);
+	const [skipUnit, setSkipUnit] = React.useState<FantasyTimeFixedUnit>("minute");
+	const [newEventDuration, setNewEventDuration] = React.useState(1);
+	const [newEventUnit, setNewEventUnit] = React.useState<FantasyTimeFixedUnit>("minute");
+	const [newEventName, setNewEventName] = React.useState("");
+	const timelineCtx = React.useContext(TimelineContext);
+
+	function newEvent(): void {
+		timelineCtx.push({
+			color: DataUtils.randomColor(),
+			duration: timeState.toMS(newEventUnit, newEventDuration),
+			name: newEventName,
+			startTime: timeState.time,
+		});
+		setNewEventName("");
+	}
 
 	return <div className={BEMUtils.className("App", { merge: [className] })}>
 		<div className="App__sidebar">
@@ -28,38 +44,60 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 		</div>
 		<Toolbar className="App__toolbar">
 			<ToolbarGroup header="timescale">
-				<button className="App__toolbar__group__button" onClick={() => setMSPerPixel(msPerPixel * 2)}><Icon icon="minus" /></button>
-				<button className="App__toolbar__group__button" onClick={() => setMSPerPixel(msPerPixel / 2)}><Icon icon="plus" /></button>
+				<button onClick={() => setMSPerPixel(msPerPixel * 2)}><Icon icon="minus" /></button>
+				<button onClick={() => setMSPerPixel(msPerPixel / 2)}><Icon icon="plus" /></button>
 			</ToolbarGroup>
 			<ToolbarGroup>
-				<button className="App__toolbar__group__button" onClick={() => playing ? timeState.stop() : timeState.start()}>
+				<button onClick={() => playing ? timeState.stop() : timeState.start()}>
 					{playing ? <Icon icon="pause" /> : <Icon icon="play" />}
 				</button>
 			</ToolbarGroup>
 			<ToolbarGroup header="skip controls">
 				<TimeInput
-					className="App__toolbar__group__input"
-					value={skipInterval}
+
+					value={skipTime}
 					unit={skipUnit}
-					onValueChange={setSkipInterval}
+					onValueChange={setSkipTime}
 					onUnitChange={setSkipUnit} />
 				<button
-					className="App__toolbar__group__button"
+
 					onClick={() => {
 						timeState.addFantasyTime({
-							[skipUnit]: -skipInterval,
+							[skipUnit]: -skipTime,
 						});
 					}}>
 					<Icon icon="step-backward" />
 				</button>
 				<button
-					className="App__toolbar__group__button"
 					onClick={() => {
 						timeState.addFantasyTime({
-							[skipUnit]: skipInterval,
+							[skipUnit]: skipTime,
 						});
 					}}>
 					<Icon icon="step-forward" />
+				</button>
+			</ToolbarGroup>
+			<ToolbarGroup header="quick event">
+				<TimeInput
+					value={newEventDuration}
+					unit={newEventUnit}
+					onValueChange={setNewEventDuration}
+					onUnitChange={setNewEventUnit} />
+				<input
+					onKeyDown={e => {
+						switch (e.key) {
+							case "Enter":
+								newEvent();
+								break;
+						}
+					}}
+					value={newEventName}
+					placeholder="event name..."
+					onChange={e => setNewEventName(e.target.value)} />
+				<button
+					disabled={!newEventName}
+					onClick={newEvent}>
+					Make event
 				</button>
 			</ToolbarGroup>
 		</Toolbar>

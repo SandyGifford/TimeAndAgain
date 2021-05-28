@@ -26,6 +26,17 @@ export default class ReactUtils {
 		return val;
 	}
 
+	public static useMounted(): React.RefObject<boolean> {
+		const mounted = React.useRef(false);
+
+		React.useEffect(() => {
+			mounted.current = true;
+			return () => { mounted.current = false; };
+		}, []);
+
+		return mounted;
+	}
+
 	public static useTransformedValue<T, R>(val: T, transformer: (val: T) => R, deps?: React.DependencyList): R {
 		const firstFrame = ReactUtils.useIsFirstFrame();
 

@@ -1,15 +1,15 @@
 import * as uuid from "uuid";
-import { FantasyEvent } from "../typings/appData";
 
 export default class DataUtils {
 	public static generateId(): string {
 		return uuid.v4();
 	}
 
-	public static makeFantasyEvent(event: Omit<FantasyEvent, "id">): FantasyEvent {
-		return {
-			...event,
-			id: DataUtils.generateId(),
-		};
+	public static randomInArray<T>(arr: T[]): T {
+		return arr[Math.floor(Math.random() * arr.length)];
+	}
+
+	public static randomColor(): string {
+		return DataUtils.randomInArray(["red", "orange", "yellow", "green", "blue", "indigo", "violet"]);
 	}
 }

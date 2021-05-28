@@ -48,5 +48,21 @@
 				margin-right: 0;
 			}
 		}
+
+		input {
+			width: 100px;
+			transition: width 0.25s;
+
+			&::placeholder {
+				font-weight: lighter;
+				font-size: 12px;
+				opacity: 1;
+				color: #EEE;
+			}
+
+			&:focus {
+				width: 150px;
+			}
+		}
 	}
 }

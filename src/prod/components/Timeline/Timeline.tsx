@@ -19,7 +19,7 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 		width: window.innerWidth,
 	});
 	const deltaT = offsets.width * msPerPixel;
-	const timeline = React.useContext(TimelineContext).useState();
+	const [timeline] = React.useContext(TimelineContext).useState();
 	const [time, dt] = timeState.useTime();
 	const animTime = ReactUtils.useAnimateValue(time, Math.abs(dt) > 500 ? 100 : 0);
 
@@ -28,20 +28,20 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 	const endMS = animTime + deltaT * 0.75;
 	const timeOffsetPX = startMSOffset / msPerPixel;
 	const zeroPX = (-animTime / msPerPixel) + timeOffsetPX;
-	const eventStack: FantasyEvent[][] = [];
+	const eventStack: { event: FantasyEvent; id: string; }[][] = [];
 
-	timeline.forEach(event => {
+	timeline.forEach(({ item: event, id }) => {
 		let line = eventStack.find(line => {
 			const lastEvent = line.slice(-1)[0];
 			if (!lastEvent) return true;
-			return lastEvent.startTime + lastEvent.duration < event.startTime;
+			return lastEvent.event.startTime + lastEvent.event.duration < event.startTime;
 		});
 		if (!line) {
 			line = [];
 			eventStack.push(line);
 		}
 
-		line.push(event);
+		line.push({ event, id });
 	});
 
 	const ref = ReactUtils.useResizeObserver<HTMLDivElement>(() => {
@@ -51,8 +51,8 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 
 	return <div className={BEMUtils.className("Timeline", { merge: [className] })} ref={ref} style={style}>
 		{
-			eventStack.map((line, l) => line.map((event) => {
-				const { startTime, duration, id } = event;
+			eventStack.map((line, l) => line.map(({ event, id }) => {
+				const { startTime, duration } = event;
 
 				if (startTime > endMS || (startTime + duration) < startMS) return null;
 				return <TimelineEvent

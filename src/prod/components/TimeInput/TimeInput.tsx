@@ -1,16 +1,15 @@
 import * as React from "react";
 import BEMUtils from "../../utils/BEMUtils";
-import { RelativeFantasyTimeStateData } from "../../utils/FantasyTimeState";
+import { FantasyTimeFixedUnit } from "../../utils/FantasyTimeState";
 
-export type TimeInputUnit = keyof RelativeFantasyTimeStateData;
-const UNITS: TimeInputUnit[] = ["millisecond", "second", "minute", "hour", "day", "year"];
+const UNITS: FantasyTimeFixedUnit[] = ["millisecond", "second", "minute", "hour", "day", "year"];
 
 export interface TimeInputProps extends Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "children"> {
 	inputProps?: Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "value" | "onChange" | "children" | "type">;
 	selectProps?: Omit<React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>, "value" | "onChange" | "children">;
-	unit: TimeInputUnit;
+	unit: FantasyTimeFixedUnit;
 	value: number;
-	onUnitChange(unit: TimeInputUnit): void;
+	onUnitChange(unit: FantasyTimeFixedUnit): void;
 	onValueChange(value: number): void;
 }
 
@@ -47,7 +46,7 @@ const TimeInput: React.FunctionComponent<TimeInputProps> = ({
 		<select
 			{...selectProps}
 			className={BEMUtils.className("TimeInput__unit", { merge: [selectClassName] })}
-			onChange={e => onUnitChange(e.target.value as TimeInputUnit)}
+			onChange={e => onUnitChange(e.target.value as FantasyTimeFixedUnit)}
 			value={unit}>
 			{
 				UNITS.map(unit => <option value={unit} key={unit}>{unit}{value === 1 ? "" : "s"}</option>)
