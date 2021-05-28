@@ -1,4 +1,5 @@
 @import "misc/theme.scss";
+@import "misc/fontawesome.css";
 
 html,
 body {
@@ -38,11 +39,9 @@ select {
 
 button {
 	cursor: pointer;
-
-	width: $inputHeight;
-	padding: 0.5em;
+	min-width: $inputHeight;
+	padding: 0 0.3em;
 	display: flex;
-	padding: 0;
 	align-items: center;
 	justify-content: center;
 }
