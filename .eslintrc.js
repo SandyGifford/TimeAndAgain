@@ -126,7 +126,7 @@ module.exports = {
 		"react/state-in-constructor": "error",
 		"react/no-unused-state": "error",
 		"react/no-unsafe": "error",
-		"react/no-unescaped-entities": "error",
+		"react/no-unescaped-entities": 0,
 		"react/no-string-refs": "error",
 		"react/no-find-dom-node": "off",
 		"react/prop-types": "off",
