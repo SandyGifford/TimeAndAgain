@@ -1,5 +1,7 @@
 import React from "react";
 
+
+let lastIdNum = 1;
 export default class ReactUtils {
 	public static useResizeObserver<T extends HTMLElement>(update: () => void, ref: React.MutableRefObject<T> = React.useRef()): React.MutableRefObject<T> {
 		let resizeObserver: ResizeObserver;
@@ -24,6 +26,17 @@ export default class ReactUtils {
 		const val = firstFrame.current;
 		firstFrame.current = false;
 		return val;
+	}
+
+	public static useUniqueNum(): number {
+		const idNum = React.useRef<number>();
+		if (!idNum.current) idNum.current = lastIdNum++;
+		return idNum.current;
+	}
+
+	public static useUniqueId(compName: string): string {
+		const idNum = ReactUtils.useUniqueNum();
+		return `${compName}__${idNum}`;
 	}
 
 	public static useMounted(): React.RefObject<boolean> {
