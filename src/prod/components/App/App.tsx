@@ -79,7 +79,7 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 			</ToolbarGroup>
 			<ToolbarGroup header="quick event">
 				<RelDatePicker
-					value={24 * 60 * 60 * 1000}
+					value={newEventDuration}
 					onChange={setNewEventDuration} />
 				<input
 					onKeyDown={e => {
