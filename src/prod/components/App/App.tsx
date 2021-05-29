@@ -5,6 +5,7 @@ import DataUtils from "../../utils/DataUtils";
 import FantasyTimeState, { FantasyTimeFixedUnit } from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
 import Icon from "../Icon/Icon";
+import RelDatePicker from "../RelDatePicker/RelDatePicker";
 import TimeInput from "../TimeInput/TimeInput";
 import Timeline from "../Timeline/Timeline";
 import Toolbar from "../Toolbar/Toolbar";
@@ -23,14 +24,13 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const [skipTime, setSkipTime] = React.useState(1);
 	const [skipUnit, setSkipUnit] = React.useState<FantasyTimeFixedUnit>("minute");
 	const [newEventDuration, setNewEventDuration] = React.useState(1);
-	const [newEventUnit, setNewEventUnit] = React.useState<FantasyTimeFixedUnit>("minute");
 	const [newEventName, setNewEventName] = React.useState("");
 	const timelineCtx = React.useContext(TimelineContext);
 
 	function newEvent(): void {
 		timelineCtx.push({
 			color: DataUtils.randomColor(),
-			duration: timeState.toMS(newEventUnit, newEventDuration),
+			duration: newEventDuration,
 			name: newEventName,
 			startTime: timeState.time,
 		});
@@ -78,11 +78,9 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 				</button>
 			</ToolbarGroup>
 			<ToolbarGroup header="quick event">
-				<TimeInput
-					value={newEventDuration}
-					unit={newEventUnit}
-					onValueChange={setNewEventDuration}
-					onUnitChange={setNewEventUnit} />
+				<RelDatePicker
+					value={24 * 60 * 60 * 1000}
+					onChange={setNewEventDuration} />
 				<input
 					onKeyDown={e => {
 						switch (e.key) {

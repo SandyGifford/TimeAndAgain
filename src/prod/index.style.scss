@@ -9,31 +9,10 @@ body {
 	overflow: hidden;
 }
 
-$inputHeight: 1.5em;
-
 button,
 select,
 input {
-	height: $inputHeight;
-	box-sizing: border-box;
-	color: white;
-	border-radius: 0.25em;
-	font-size: inherit;
-
-	border: none;
-	background: #556;
-
-	&:hover { background: #667; }
-	&:active { background: #445; }
-
-	&:disabled {
-		opacity: 0.5;
-		pointer-events: none;
-	}
-}
-
-input {
-	padding: 0.25em 0.5em;
+	@include input;
 }
 
 select {
@@ -44,7 +23,7 @@ select {
 
 button {
 	cursor: pointer;
-	min-width: $inputHeight;
+	min-width: $dInputHeight;
 	padding: 0 0.3em;
 	display: flex;
 	align-items: center;

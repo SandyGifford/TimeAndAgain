@@ -1,0 +1,24 @@
+@import "../../misc/theme.scss";
+
+$RelDatePickerClassName: RelDatePicker;
+
+.#{$RelDatePickerClassName} {
+	@include input;
+	display: flex;
+	align-items: center;
+
+	&__year,
+	&__day,
+	&__hour,
+	&__minute {
+		flex: 0 1 0;
+		background: transparent;
+		outline: none;
+		margin-left: 8px;
+		padding: 0;
+
+		&:first-child {
+			margin-left: 0;
+		}
+	}
+}

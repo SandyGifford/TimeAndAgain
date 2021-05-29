@@ -1,0 +1,21 @@
+$dInputHeight: 1.5em;
+
+@mixin input {
+	height: $dInputHeight;
+	box-sizing: border-box;
+	color: white;
+	border-radius: 0.25em;
+	font-size: inherit;
+	padding: 0.25em 0.5em;
+
+	border: none;
+	background: #556;
+
+	&:hover { background: #667; }
+	&:active { background: #445; }
+
+	&:disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
