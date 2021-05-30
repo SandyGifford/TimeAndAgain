@@ -1,0 +1,8 @@
+@import "../../misc/theme.scss";
+
+$QuickEventClassName: QuickEvent;
+
+.#{$QuickEventClassName} {
+	display: flex;
+	gap: 4px;
+}

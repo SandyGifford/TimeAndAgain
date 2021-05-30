@@ -1,10 +1,9 @@
 import * as React from "react";
-import { TimelineContext } from "../../contexts";
 import BEMUtils from "../../utils/BEMUtils";
-import DataUtils from "../../utils/DataUtils";
 import FantasyTimeState from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
 import Icon from "../Icon/Icon";
+import QuickEvent from "../QuickEvent/QuickEvent";
 import RelDatePicker from "../RelDatePicker/RelDatePicker";
 import Timeline from "../Timeline/Timeline";
 import Toolbar from "../Toolbar/Toolbar";
@@ -21,19 +20,6 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const dispMsPerPixel = ReactUtils.useAnimateValue(msPerPixel, 300);
 	const playing = timeState.usePlaying();
 	const [skipTime, setSkipTime] = React.useState(timeState.minuteToMS(1));
-	const [newEventDuration, setNewEventDuration] = React.useState(timeState.minuteToMS(1));
-	const [newEventName, setNewEventName] = React.useState("");
-	const timelineCtx = React.useContext(TimelineContext);
-
-	function newEvent(): void {
-		timelineCtx.push({
-			color: DataUtils.randomColor(),
-			duration: newEventDuration,
-			name: newEventName,
-			startTime: timeState.time,
-		});
-		setNewEventName("");
-	}
 
 	return <div className={BEMUtils.className("App", { merge: [className] })}>
 		<div className="App__sidebar">
@@ -64,25 +50,7 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 				</button>
 			</ToolbarGroup>
 			<ToolbarGroup header="quick event">
-				<RelDatePicker
-					value={newEventDuration}
-					onChange={setNewEventDuration} />
-				<input
-					onKeyDown={e => {
-						switch (e.key) {
-							case "Enter":
-								newEvent();
-								break;
-						}
-					}}
-					value={newEventName}
-					placeholder="event name..."
-					onChange={e => setNewEventName(e.target.value)} />
-				<button
-					disabled={!newEventName}
-					onClick={newEvent}>
-					Make event
-				</button>
+				<QuickEvent />
 			</ToolbarGroup>
 		</Toolbar>
 		<Timeline
