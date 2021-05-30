@@ -20,8 +20,8 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const [timelineFontSize, setTimelineFontSize] = React.useState(24);
 	const dispMsPerPixel = ReactUtils.useAnimateValue(msPerPixel, 300);
 	const playing = timeState.usePlaying();
-	const [skipTime, setSkipTime] = React.useState(1000);
-	const [newEventDuration, setNewEventDuration] = React.useState(0);
+	const [skipTime, setSkipTime] = React.useState(timeState.minuteToMS(1));
+	const [newEventDuration, setNewEventDuration] = React.useState(timeState.minuteToMS(1));
 	const [newEventName, setNewEventName] = React.useState("");
 	const timelineCtx = React.useContext(TimelineContext);
 
