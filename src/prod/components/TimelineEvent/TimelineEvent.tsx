@@ -49,6 +49,7 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 			width: (duration / msPerPixel),
 			...style,
 		}}
+		title={name}
 		className={BEMUtils.className("TimelineEvent", { merge: [className] })}>
 		<div className="TimelineEvent__content" ref={contentRef}>
 			<div
