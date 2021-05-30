@@ -37,7 +37,7 @@ const RelDatePicker: React.FunctionComponent<RelDatePickerProps> = ({ className,
 	const id = ReactUtils.useUniqueId("RelDatePicker");
 
 	const timeState = FantasyTimeState.useFantasyTimeState();
-	const msRef = React.useRef(0);
+	// const msRef = React.useRef(value);
 	const units = UNITS.reduce((map, unit) => {
 		map[unit] = {
 			state: React.useState(0),
@@ -50,30 +50,26 @@ const RelDatePicker: React.FunctionComponent<RelDatePickerProps> = ({ className,
 		ref: React.MutableRefObject<HTMLInputElement>;
 	}>);
 
-	function updateMSRef(): void {
-		msRef.current = UNITS.reduce((ms, unit) => {
-			return ms + timeState.toMS(unit, units[unit].state[0]);
+	function getMSFromState(newState: Partial<Record<UsedUnits, number>> = {}): number {
+		return UNITS.reduce((ms, unit) => {
+			return ms + timeState.toMS(unit, typeof newState[unit] === "number" ? newState[unit] : units[unit].state[0]);
 		}, 0);
 	}
 
 	React.useEffect(() => {
-		updateMSRef();
-		if (value !== msRef.current) onChange(msRef.current);
-	}, UNITS.map(unit => units[unit].state[0]));
+		let valLeft = value;
 
-	React.useEffect(() => {
-		if (value !== msRef.current) {
-			let valLeft = value;
-
-			UNITS.forEach(unit => {
-				const newVal = Math.floor(timeState.msTo(unit, valLeft));
-				valLeft -= timeState.toMS(unit, newVal);
-				units[unit].state[1](newVal);
-			});
-
-			msRef.current = value;
-		}
+		UNITS.forEach(unit => {
+			const newVal = Math.floor(timeState.msTo(unit, valLeft));
+			valLeft -= timeState.toMS(unit, newVal);
+			units[unit].state[1](newVal);
+		});
 	}, [value]);
+
+	// React.useEffect(() => {
+	// 	updateMSRefFromState();
+	// 	if (value !== msRef.current) onChange(msRef.current);
+	// }, UNITS.map(unit => units[unit].state[0]));
 
 	UNITS.forEach(unit => {
 		const { ref, state: [val] } = units[unit];
@@ -90,14 +86,22 @@ const RelDatePicker: React.FunctionComponent<RelDatePickerProps> = ({ className,
 			UNITS.map(unit => {
 				const { ref, state: [val, setVal] } = units[unit];
 				const inputId = `${id}__${unit}`;
+
+				function change(newVal: number): void {
+					setVal(newVal);
+					onChange(getMSFromState({
+						[unit]: newVal,
+					}));
+				}
+
 				return <React.Fragment key={unit}>
 					<input
 						ref={ref}
 						className="RelDatePicker__input"
 						id={inputId}
 						value={val}
-						onKeyDown={e => setVal(processNum(val + keyDownEventToDiff(e)))}
-						onChange={e => setVal(parseNum(e.currentTarget.value))} />
+						onKeyDown={e => change(processNum(val + keyDownEventToDiff(e)))}
+						onChange={e => change(parseNum(e.currentTarget.value))} />
 					<label className="RelDatePicker__label" htmlFor={inputId}>{unit[0]}</label>
 				</React.Fragment>;
 			})

@@ -2,11 +2,10 @@ import * as React from "react";
 import { TimelineContext } from "../../contexts";
 import BEMUtils from "../../utils/BEMUtils";
 import DataUtils from "../../utils/DataUtils";
-import FantasyTimeState, { FantasyTimeFixedUnit } from "../../utils/FantasyTimeState";
+import FantasyTimeState from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
 import Icon from "../Icon/Icon";
 import RelDatePicker from "../RelDatePicker/RelDatePicker";
-import TimeInput from "../TimeInput/TimeInput";
 import Timeline from "../Timeline/Timeline";
 import Toolbar from "../Toolbar/Toolbar";
 import ToolbarGroup from "../ToolbarGroup/ToolbarGroup";
@@ -21,9 +20,8 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const [timelineFontSize, setTimelineFontSize] = React.useState(24);
 	const dispMsPerPixel = ReactUtils.useAnimateValue(msPerPixel, 300);
 	const playing = timeState.usePlaying();
-	const [skipTime, setSkipTime] = React.useState(1);
-	const [skipUnit, setSkipUnit] = React.useState<FantasyTimeFixedUnit>("minute");
-	const [newEventDuration, setNewEventDuration] = React.useState(1);
+	const [skipTime, setSkipTime] = React.useState(1000);
+	const [newEventDuration, setNewEventDuration] = React.useState(0);
 	const [newEventName, setNewEventName] = React.useState("");
 	const timelineCtx = React.useContext(TimelineContext);
 
@@ -53,27 +51,15 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 				</button>
 			</ToolbarGroup>
 			<ToolbarGroup header="skip controls">
-				<TimeInput
-
+				<RelDatePicker
 					value={skipTime}
-					unit={skipUnit}
-					onValueChange={setSkipTime}
-					onUnitChange={setSkipUnit} />
+					onChange={setSkipTime} />
 				<button
-
-					onClick={() => {
-						timeState.addFantasyTime({
-							[skipUnit]: -skipTime,
-						});
-					}}>
+					onClick={() => timeState.addTime(-skipTime)}>
 					<Icon icon="step-backward" />
 				</button>
 				<button
-					onClick={() => {
-						timeState.addFantasyTime({
-							[skipUnit]: skipTime,
-						});
-					}}>
+					onClick={() => timeState.addTime(skipTime)}>
 					<Icon icon="step-forward" />
 				</button>
 			</ToolbarGroup>
