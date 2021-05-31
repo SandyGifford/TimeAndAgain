@@ -164,6 +164,14 @@ export default class FantasyTimeState extends TimeState {
 		return state.useFantasyTime(precision);
 	}
 
+	public static getMonthDayCount(monthNumber: number, options: FantasyTimeStateOptions = {}): number {
+		const months = (options.months || DEFAULT_OPTIONS.months);
+		const daysPerYear = (options.daysPerYear || DEFAULT_OPTIONS.daysPerYear);
+		const month = months[monthNumber - 1];
+		const nextMonth = months[monthNumber];
+		return (nextMonth ? nextMonth.startDay : daysPerYear) - month.startDay;
+	}
+
 	public static msTo(unit: FantasyTimeFixedUnit, ms: number, options?: FantasyTimeStateOptions): number {
 		switch(unit) {
 			case "millisecond":
@@ -259,10 +267,20 @@ export default class FantasyTimeState extends TimeState {
 		this.options = options;
 	};
 
+	public getMonths = (): FantasyTimeStateYearSegment[] => {
+		return this.options.months.map(month => ({ ...month }));
+	};
+
+	public getDaysOfWeek = (): string[] => {
+		return [...this.options.daysOfWeek];
+	};
+
 	public useFantasyTime(precision?: number): FantasyTimeStateData {
-		const ms = this.useTime(precision);
+		const [ms] = this.useTime(precision);
 		return this.msToFantasyTime(ms);
 	}
+
+	public getMonthDayCount = (monthNumber: number): number => FantasyTimeState.getMonthDayCount(monthNumber, this.options);
 
 	public msTo = (unit: FantasyTimeFixedUnit, ms: number): number => FantasyTimeState.msTo(unit, ms, this.options);
 	public msToSecond = (ms: number): number => FantasyTimeState.msToSecond(ms);
@@ -286,7 +304,7 @@ export default class FantasyTimeState extends TimeState {
 		this.addTime(this.fantasyTimeToMS(FantasyTimeState.relativeToEssential(fTime)));
 	}
 
-	public msToFantasyTime(milliseconds): FantasyTimeStateData {
+	public msToFantasyTime(milliseconds: number): FantasyTimeStateData {
 		return FantasyTimeState.msToFantasyTime(milliseconds, this.options);
 	}
 
