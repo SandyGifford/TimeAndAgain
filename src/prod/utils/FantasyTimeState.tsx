@@ -36,12 +36,12 @@ export interface EssentialFantasyTimeStateData {
 export interface FantasyTimeStateData extends EssentialFantasyTimeStateData {
 	epoch: number;
 	dayOfMonth: number;
-	monthNumber: number;
+	monthIndex: number;
 	month: string;
-	seasonNumber: number;
+	seasonIndex: number;
 	season: string;
 	dayOfWeek: string;
-	dayOfWeekNumber: number;
+	dayOfWeekIndex: number;
 }
 
 const fantasyTimeStateDefaultMonths: FantasyTimeStateYearSegment[] = [
@@ -146,12 +146,12 @@ export default class FantasyTimeState extends TimeState {
 			hour,
 			minute,
 			second,
-			monthNumber: monthIndex + 1,
-			seasonNumber: seasonIndex + 1,
+			monthIndex,
+			seasonIndex,
 			month: options.months[monthIndex].name,
 			season: options.seasons[seasonIndex].name,
 			dayOfWeek: daysOfWeek[dayOfWeekIndex],
-			dayOfWeekNumber: dayOfWeekIndex + 1,
+			dayOfWeekIndex,
 		};
 	}
 
@@ -164,11 +164,11 @@ export default class FantasyTimeState extends TimeState {
 		return state.useFantasyTime(precision);
 	}
 
-	public static getMonthDayCount(monthNumber: number, options: FantasyTimeStateOptions = {}): number {
+	public static getMonthDayCount(monthIndex: number, options: FantasyTimeStateOptions = {}): number {
 		const months = (options.months || DEFAULT_OPTIONS.months);
 		const daysPerYear = (options.daysPerYear || DEFAULT_OPTIONS.daysPerYear);
-		const month = months[monthNumber - 1];
-		const nextMonth = months[monthNumber];
+		const month = months[monthIndex];
+		const nextMonth = months[monthIndex + 1];
 		return (nextMonth ? nextMonth.startDay : daysPerYear) - month.startDay;
 	}
 
@@ -280,7 +280,7 @@ export default class FantasyTimeState extends TimeState {
 		return this.msToFantasyTime(ms);
 	}
 
-	public getMonthDayCount = (monthNumber: number): number => FantasyTimeState.getMonthDayCount(monthNumber, this.options);
+	public getMonthDayCount = (monthIndex: number): number => FantasyTimeState.getMonthDayCount(monthIndex, this.options);
 
 	public msTo = (unit: FantasyTimeFixedUnit, ms: number): number => FantasyTimeState.msTo(unit, ms, this.options);
 	public msToSecond = (ms: number): number => FantasyTimeState.msToSecond(ms);
