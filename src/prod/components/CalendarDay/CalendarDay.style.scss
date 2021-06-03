@@ -1,0 +1,19 @@
+@import "../../misc/theme.scss";
+
+$CalendarDayClassName: CalendarDay;
+
+.#{$CalendarDayClassName} {
+	flex: 0 0 auto;
+	width: 4em;
+	height: 6em;
+	border: 1px solid black;
+	background: #999;
+
+	&--inCurrentMonth {
+		background: white;
+	}
+
+	&--currentDay {
+		background: yellow;
+	}
+}

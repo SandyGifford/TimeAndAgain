@@ -194,6 +194,14 @@ export default class FantasyTimeState extends TimeState {
 	public static msToHour = (ms: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.msToMinute(ms || 0, options) / (options.minutesPerHour || DEFAULT_OPTIONS.minutesPerHour);
 	public static msToDay = (ms: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.msToHour(ms || 0, options) / (options.hoursPerDay || DEFAULT_OPTIONS.hoursPerDay);
 	public static msToYear = (ms: number, options: FantasyTimeStateOptions = {}): number => FantasyTimeState.msToDay(ms || 0, options) / (options.daysPerYear || DEFAULT_OPTIONS.daysPerYear);
+	public static msToDayOfWeekIndex = (ms: number, options: FantasyTimeStateOptions = {}): number => {
+		const daysOfWeek = options.daysOfWeek || DEFAULT_OPTIONS.daysOfWeek;
+		return Math.floor(FantasyTimeState.msToDay(ms, options)) % daysOfWeek.length;
+	};
+	public static msToDayOfWeek = (ms: number, options: FantasyTimeStateOptions = {}): string => {
+		const daysOfWeek = options.daysOfWeek || DEFAULT_OPTIONS.daysOfWeek;
+		return daysOfWeek[FantasyTimeState.msToDayOfWeekIndex(ms, options)];
+	};
 
 	public static toMS(unit: FantasyTimeFixedUnit, val: number, options?: FantasyTimeStateOptions): number {
 		switch(unit) {
@@ -288,6 +296,8 @@ export default class FantasyTimeState extends TimeState {
 	public msToHour = (ms: number): number => FantasyTimeState.msToHour(ms, this.options);
 	public msToDay = (ms: number): number => FantasyTimeState.msToDay(ms, this.options);
 	public msToYear = (ms: number): number => FantasyTimeState.msToYear(ms, this.options);
+	public msToDayOfWeekIndex = (ms: number): number => FantasyTimeState.msToDayOfWeekIndex(ms, this.options);
+	public msToDayOfWeek = (ms: number): string => FantasyTimeState.msToDayOfWeek(ms, this.options);
 
 	public toMS = (unit: FantasyTimeFixedUnit, val: number): number => FantasyTimeState.toMS(unit, val, this.options);
 	public secondToMS = (seconds: number): number => FantasyTimeState.secondToMS(seconds);

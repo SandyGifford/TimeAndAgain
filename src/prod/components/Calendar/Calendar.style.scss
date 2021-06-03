@@ -1,0 +1,9 @@
+@import "../../misc/theme.scss";
+
+$CalendarClassName: Calendar;
+
+.#{$CalendarClassName} {
+	&__week {
+		display: flex;
+	}
+}

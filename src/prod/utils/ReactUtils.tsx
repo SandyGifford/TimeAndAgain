@@ -50,19 +50,37 @@ export default class ReactUtils {
 		return mounted;
 	}
 
-	public static useTransformedValue<T, R>(val: T, transformer: (val: T) => R, deps?: React.DependencyList): R {
+	public static useMakeValue<R>(maker: () => R, deps: React.DependencyList): R {
+		return ReactUtils.useMakeState(maker, deps)[0];
+	}
+
+	public static useMakeState<R>(maker: () => R, deps: React.DependencyList): [R, (val: R) => void] {
 		const firstFrame = ReactUtils.useIsFirstFrame();
 
 		let initial: R;
-		if (firstFrame) initial = transformer(val);
+		if (firstFrame) initial = maker();
 
 		const [sVal, setSVal] = React.useState<R>(initial);
 
 		React.useEffect(() => {
-			setSVal(transformer(val));
-		}, deps || [val]);
+			setSVal(maker());
+		}, deps);
 
-		return sVal;
+		return [sVal, setSVal];
+	}
+
+	public static useTransformedValue<T, R>(val: T, transformer: (val: T) => R, deps?: React.DependencyList): R {
+		return ReactUtils.useMakeValue(() => transformer(val), deps || [val]);
+	}
+
+	public static useMakeOnce<T>(maker: () => T): T {
+		const ref = React.useRef<T>();
+		const madeRef = React.useRef(false);
+		if (!madeRef.current) {
+			madeRef.current = true;
+			ref.current = maker();
+		}
+		return ref.current;
 	}
 
 	public static useDampenNumber(value: number, maxNumPerS: number): number {

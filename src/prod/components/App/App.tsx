@@ -2,6 +2,7 @@ import * as React from "react";
 import BEMUtils from "../../utils/BEMUtils";
 import FantasyTimeState from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
+import Calendar from "../Calendar/Calendar";
 import Icon from "../Icon/Icon";
 import QuickEvent from "../QuickEvent/QuickEvent";
 import RelDatePicker from "../RelDatePicker/RelDatePicker";
@@ -25,6 +26,7 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 		<div className="App__sidebar">
 			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize * 2)}><Icon icon="plus" /></button>
 			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize / 2)}><Icon icon="minus" /></button>
+			<Calendar ms={timeState.time} onChange={null} />
 		</div>
 		<Toolbar className="App__toolbar">
 			<ToolbarGroup header="timescale">
