@@ -1,9 +1,40 @@
 import * as React from "react";
 import BEMUtils from "../../utils/BEMUtils";
 import LoopUtils from "../../utils/LoopUtils";
-import FantasyTimeState from "../../utils/FantasyTimeState";
+import FantasyTimeState, { FantasyTimeStateData } from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
-import CalendarDay from "../CalendarDay/CalendarDay";
+
+
+export interface CalendarDayChildRendererData extends FantasyTimeStateData {
+	inCurrentMonth: boolean;
+	currentDay: boolean;
+}
+
+export interface CalendarDayProps {
+	ms: number;
+	currentMonthIndex: number;
+	currentDayOfYear: number;
+	currentYear: number;
+
+	children?(data: CalendarDayChildRendererData): React.ReactElement;
+}
+
+const CalendarDay: React.FunctionComponent<CalendarDayProps> = React.memo(({ ms, children, currentMonthIndex, currentDayOfYear, currentYear }) => {
+	const timeState = FantasyTimeState.useFantasyTimeState();
+	const timeStateData: CalendarDayChildRendererData = ReactUtils.useTransformedValue(ms, ms => {
+		const fTime = timeState.msToFantasyTime(ms);
+
+		return {
+			...fTime,
+			currentDay: (fTime.year === currentYear) && (fTime.dayOfYear === currentDayOfYear),
+			inCurrentMonth: currentMonthIndex === fTime.monthIndex,
+		};
+	});
+
+	return children ? children(timeStateData) : null;
+});
+
+CalendarDay.displayName = "CalendarDay";
 
 export interface CalendarProps extends Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "children"> {
 	ms: number;
