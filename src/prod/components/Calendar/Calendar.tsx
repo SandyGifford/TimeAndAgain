@@ -38,9 +38,10 @@ CalendarDay.displayName = "CalendarDay";
 
 export interface CalendarProps extends Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "children"> {
 	ms: number;
+	children?(data: CalendarDayChildRendererData): React.ReactElement;
 }
 
-const Calendar: React.FunctionComponent<CalendarProps> = ({ className, ms, ...divProps }) => {
+const Calendar: React.FunctionComponent<CalendarProps> = React.memo(({ className, ms, children, ...divProps }) => {
 	const timeState = FantasyTimeState.useFantasyTimeState();
 	const { year, monthIndex, dayOfYear, dayOfMonth } = ReactUtils.useMakeValue(() => timeState.msToFantasyTime(ms), [ms]);
 
@@ -51,17 +52,15 @@ const Calendar: React.FunctionComponent<CalendarProps> = ({ className, ms, ...di
 		const daysInMonth = timeState.getMonthDayCount(monthIndex);
 		const msPerDay = timeState.dayToMS(1);
 
-		const firstDayOfMonthMS = ms - timeState.dayToMS(dayOfMonth);
+		const firstDayOfMonthMS = ms - timeState.dayToMS(dayOfMonth - 1);
 		const firstDayOfMonthDayOfWeekIndex = timeState.msToDayOfWeekIndex(firstDayOfMonthMS);
-		const previousMonthMsOffset = (firstDayOfMonthDayOfWeekIndex + firstDayOfMonthDayOfWeekIndex) * msPerDay;
 
 		const firstDayOfNextMonthMS = firstDayOfMonthMS + timeState.dayToMS(daysInMonth);
-		const firstDayOfNextMonthDayOfWeekIndex = timeState.msToDayOfWeekIndex(firstDayOfNextMonthMS);
-		const daysLeftOnCalendar = daysOfWeek.length - firstDayOfNextMonthDayOfWeekIndex;
+		const daysLeftInWeek = daysOfWeek.length - timeState.msToDayOfWeekIndex(firstDayOfNextMonthMS);
 
-		LoopUtils.forNTimes(firstDayOfMonthDayOfWeekIndex, i => days.push(ms + i * msPerDay - previousMonthMsOffset));
-		LoopUtils.forNTimes(daysInMonth, i => days.push(ms + (i - firstDayOfMonthDayOfWeekIndex) * msPerDay));
-		LoopUtils.forNTimes(daysLeftOnCalendar, i => days.push(firstDayOfNextMonthMS + i * msPerDay));
+		LoopUtils.forNTimes(firstDayOfMonthDayOfWeekIndex, i => days.push(firstDayOfMonthMS + (i - firstDayOfMonthDayOfWeekIndex) * msPerDay));
+		LoopUtils.forNTimes(daysInMonth, i => days.push(firstDayOfMonthMS + i * msPerDay));
+		LoopUtils.forNTimes(daysLeftInWeek, i => days.push(firstDayOfNextMonthMS + i * msPerDay));
 
 		const weeks: number[][] = [];
 		LoopUtils.doWhile(() => {
@@ -78,19 +77,21 @@ const Calendar: React.FunctionComponent<CalendarProps> = ({ className, ms, ...di
 		className={BEMUtils.className("Calendar", { merge: [className] })}>
 		{
 			weeks.map((week, w) => <div key={w} className="Calendar__week">{
-				week.map((day, d) => <CalendarDay
-					key={d}
-					ms={day}
-					currentYear={year}
-					currentMonthIndex={monthIndex}
-					currentDayOfYear={dayOfYear} />)
+				week.map(
+					(day, d) => <CalendarDay
+						key={d}
+						ms={day}
+						currentYear={year}
+						currentMonthIndex={monthIndex}
+						currentDayOfYear={dayOfYear}>{children}</CalendarDay>
+				)
 			}</div>)
 		}
 	</div>;
-};
+});
 
 
-export default React.memo(Calendar);
+export default Calendar;
 
 import "./Calendar.style";
 

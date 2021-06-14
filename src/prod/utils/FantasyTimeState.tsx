@@ -81,7 +81,7 @@ export type FantasyTimeFixedUnit = keyof RelativeFantasyTimeStateData;
 
 function findYearSegmentIndex(dayOfYear: number, segments: FantasyTimeStateYearSegment[]): number {
 	return segments.findIndex((segment, i) => {
-		if (segments[i + 1]) return dayOfYear >= segment.startDay && dayOfYear < segments[i + 1].startDay;
+		if (segments[i + 1]) return (dayOfYear - 1) >= segment.startDay && (dayOfYear - 1) < segments[i + 1].startDay;
 		else return true;
 	});
 }

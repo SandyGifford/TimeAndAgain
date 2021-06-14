@@ -26,7 +26,6 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 		<div className="App__sidebar">
 			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize * 2)}><Icon icon="plus" /></button>
 			<button className="App__sidebar__button" onClick={() => setTimelineFontSize(timelineFontSize / 2)}><Icon icon="minus" /></button>
-			<Calendar ms={timeState.time} onChange={null} />
 		</div>
 		<Toolbar className="App__toolbar">
 			<ToolbarGroup header="timescale">
@@ -61,6 +60,11 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 				fontSize: timelineFontSize,
 			}}
 			msPerPixel={dispMsPerPixel} />
+		<div className="App__lower">
+			<Calendar ms={timeState.time} className="App__lower__calendar">{
+				({ month, dayOfMonth, dayOfWeek, year, dayOfYear, inCurrentMonth, currentDay }) => <div className={BEMUtils.className("App__lower__calendar__day", { mods: { inCurrentMonth, currentDay } })}>{month} {dayOfMonth} {year}<br />{dayOfYear}<br />{dayOfWeek}</div>
+			}</Calendar>
+		</div>
 	</div>;
 };
 

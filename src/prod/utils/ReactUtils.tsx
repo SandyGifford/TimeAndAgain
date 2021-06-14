@@ -51,7 +51,10 @@ export default class ReactUtils {
 	}
 
 	public static useMakeValue<R>(maker: () => R, deps: React.DependencyList): R {
-		return ReactUtils.useMakeState(maker, deps)[0];
+		const prevDeps = React.useRef<React.DependencyList>(undefined);
+		const val = React.useRef<R>();
+		if (!prevDeps.current || !deps.every((dep, i) => prevDeps[i] !== dep)) val.current = maker();
+		return val.current;
 	}
 
 	public static useMakeState<R>(maker: () => R, deps: React.DependencyList): [R, (val: R) => void] {

@@ -7,8 +7,9 @@
 	display: grid;
 	grid-template-areas:
 		"toolbar"
-		"content";
-	grid-template-rows: auto 1fr;
+		"content"
+		"lower";
+	grid-template-rows: auto 1fr auto;
 	grid-template-columns: auto;
 
 	position: absolute;
@@ -45,5 +46,32 @@
 		grid-area: content;
 		transition: font-size 0.3s;
 		z-index: 0;
+	}
+
+	&__lower {
+		grid-area: lower;
+
+		&__calendar {
+			&__day {
+				width: 100px;
+				position: relative;
+				white-space: normal;
+				background: #CCC;
+
+				&::after {
+					content: "";
+					display: block;
+					padding-bottom: 150%;
+				}
+
+				&--inCurrentMonth {
+					background: white;
+				}
+
+				&--currentDay {
+					background: yellow;
+				}
+			}
+		}
 	}
 }
