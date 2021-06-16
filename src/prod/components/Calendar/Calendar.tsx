@@ -38,10 +38,11 @@ CalendarDay.displayName = "CalendarDay";
 
 export interface CalendarProps extends Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "children"> {
 	ms: number;
+	weekClassName?: string;
 	children?(data: CalendarDayChildRendererData): React.ReactElement;
 }
 
-const Calendar: React.FunctionComponent<CalendarProps> = React.memo(({ className, ms, children, ...divProps }) => {
+const Calendar: React.FunctionComponent<CalendarProps> = React.memo(({ className, ms, children, weekClassName, ...divProps }) => {
 	const timeState = FantasyTimeState.useFantasyTimeState();
 	const { year, monthIndex, dayOfYear, dayOfMonth } = ReactUtils.useMakeValue(() => timeState.msToFantasyTime(ms), [ms]);
 
@@ -76,7 +77,7 @@ const Calendar: React.FunctionComponent<CalendarProps> = React.memo(({ className
 		{...divProps}
 		className={BEMUtils.className("Calendar", { merge: [className] })}>
 		{
-			weeks.map((week, w) => <div key={w} className="Calendar__week">{
+			weeks.map((week, w) => <div key={w} className={BEMUtils.className("Calendar__week", { merge: [weekClassName] })}>{
 				week.map(
 					(day, d) => <CalendarDay
 						key={d}

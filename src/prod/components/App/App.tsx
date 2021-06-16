@@ -2,7 +2,7 @@ import * as React from "react";
 import BEMUtils from "../../utils/BEMUtils";
 import FantasyTimeState from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
-import Calendar from "../Calendar/Calendar";
+import AutoCalendar from "../AutoCalendar/AutoCalendar";
 import Icon from "../Icon/Icon";
 import QuickEvent from "../QuickEvent/QuickEvent";
 import RelDatePicker from "../RelDatePicker/RelDatePicker";
@@ -61,9 +61,13 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 			}}
 			msPerPixel={dispMsPerPixel} />
 		<div className="App__lower">
-			<Calendar ms={timeState.time} className="App__lower__calendar">{
-				({ month, dayOfMonth, dayOfWeek, year, dayOfYear, inCurrentMonth, currentDay }) => <div className={BEMUtils.className("App__lower__calendar__day", { mods: { inCurrentMonth, currentDay } })}>{month} {dayOfMonth} {year}<br />{dayOfYear}<br />{dayOfWeek}</div>
-			}</Calendar>
+			<AutoCalendar
+				className="App__lower__calendar"
+				weekClassName="App__lower__calendar__week">
+				{
+					({ month, dayOfMonth, dayOfWeek, year, dayOfYear, inCurrentMonth, currentDay }) => <div className={BEMUtils.className("App__lower__calendar__week__day", { mods: { inCurrentMonth, currentDay } })}>{month} {dayOfMonth} {year}<br />{dayOfYear}<br />{dayOfWeek}</div>
+				}
+			</AutoCalendar>
 		</div>
 	</div>;
 };

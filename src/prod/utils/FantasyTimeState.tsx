@@ -1,4 +1,4 @@
-import TimeState from "./TimeState";
+import TimeState, { TimeStateTime } from "./TimeState";
 import * as React from "react";
 
 export interface FantasyTimeStateYearSegment {
@@ -98,6 +98,11 @@ export default class FantasyTimeState extends TimeState {
 		const state = React.useRef(firstFrame.current ? new FantasyTimeState(options) : null);
 		firstFrame.current = false;
 		return state.current;
+	}
+
+	public static useTime(precision?: number): TimeStateTime {
+		const timeState = FantasyTimeState.useFantasyTimeState();
+		return timeState.useTime(precision);
 	}
 
 	public static fantasyTimeToMS(fTime: EssentialFantasyTimeStateData, options?: FantasyTimeStateOptions): number {

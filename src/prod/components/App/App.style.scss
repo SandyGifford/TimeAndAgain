@@ -52,24 +52,29 @@
 		grid-area: lower;
 
 		&__calendar {
-			&__day {
-				width: 100px;
-				position: relative;
-				white-space: normal;
-				background: #CCC;
+			display: flex;
+			flex-direction: column;
 
-				&::after {
-					content: "";
-					display: block;
-					padding-bottom: 150%;
-				}
+			&__week {
+				flex: 1 1 0;
+				display: flex;
 
-				&--inCurrentMonth {
-					background: white;
-				}
+				&__day {
+					flex: 1 1 0;
+					position: relative;
+					white-space: normal;
+					background: #CCC;
+					padding: 4px;
+					border: 1px #CCC;
+					border-style: solid none none solid;
 
-				&--currentDay {
-					background: yellow;
+					&--inCurrentMonth {
+						background: white;
+					}
+
+					&--currentDay {
+						background: yellow;
+					}
 				}
 			}
 		}
