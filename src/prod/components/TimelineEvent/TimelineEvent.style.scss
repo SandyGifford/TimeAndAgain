@@ -1,6 +1,7 @@
 @import "../../misc/theme.scss";
 
 .TimelineEvent {
+	display: flex;
 	position: absolute;
 	top: 0;
 	height: 1em;
@@ -9,8 +10,11 @@
 	border-style: solid;
 	border-width: 0.1em;
 	cursor: default;
+	align-items: center;
+	overflow: hidden;
 
 	&__content {
+		flex: 1 1 auto;
 		position: relative;
 		margin-left: 0.5em;
 		margin-right: 0.5em;
@@ -27,6 +31,53 @@
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+		}
+	}
+
+	&__delete {
+		$buttonWidth: 0.7em;
+
+		flex: 0 0 auto;
+		margin-right: 0.1em;
+		width: 0;
+		transition: width 0.5s;
+
+		&--rootHovered {
+			width: $buttonWidth;
+		}
+
+		&__button {
+			width: 1em;
+			height: 1em;
+			font-size: $buttonWidth;
+
+			opacity: 0;
+			transition: opacity 0.5s;
+
+			border: none;
+			border-radius: 50%;
+			background-color: rgba(black, 0.5);
+			color: rgba(white, 0.75);
+			position: relative;
+			cursor: pointer;
+
+			&--rootHovered {
+				opacity: 1;
+			}
+
+			&:hover {
+				background-color: black;
+				color: white;
+			}
+
+			&::after {
+				content: "×";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				margin-top: -0.1em;
+			}
 		}
 	}
 }
