@@ -10,6 +10,9 @@ export interface TimelineEventProps extends Omit<React.DetailedHTMLProps<React.H
 	msPerPixel: number;
 	timelineLeftOffset: number;
 	timelineRightOffset: number;
+	eventId: string;
+	// we pass the ID here redundantly so we can pass a static function into the component
+	deleteById(id: string): void;
 }
 
 const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
@@ -20,6 +23,8 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 	style,
 	timelineLeftOffset,
 	timelineRightOffset,
+	eventId,
+	deleteById,
 	...divProps
 }) => {
 	const bgColor = ReactUtils.useTransformedValue(color, color => {
@@ -64,7 +69,9 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 			</div>
 		</div>
 		<div className={BEMUtils.className("TimelineEvent__delete", { mods: { rootHovered } })}>
-			<button className={BEMUtils.className("TimelineEvent__delete__button", { mods: { rootHovered } })} />
+			<button
+				className={BEMUtils.className("TimelineEvent__delete__button", { mods: { rootHovered } })}
+				onClick={() => deleteById(eventId)} />
 		</div>
 	</div>;
 };

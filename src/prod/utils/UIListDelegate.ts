@@ -121,7 +121,6 @@ export default class UIListDelegate<T> {
 	};
 
 	public deleteAtIndex = (index: number): UIListDelegateItem<T> => {
-		console.log("deleting", index);
 		if (index === -1) return null;
 		const { id, removeDelegate } = this.items[index];
 		const { animOutMS } = this.options;
