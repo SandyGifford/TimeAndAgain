@@ -3,25 +3,4 @@
 .Toolbar {
 	display: flex;
 	font-size: 16px;
-
-	select {
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-	}
-
-	button,
-	select,
-	input {
-		@include input;
-	}
-
-	button {
-		cursor: pointer;
-		min-width: $dInputHeight;
-		padding: 0 0.3em;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
 }

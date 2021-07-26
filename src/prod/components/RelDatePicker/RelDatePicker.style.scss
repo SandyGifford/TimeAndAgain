@@ -13,7 +13,9 @@ $RelDatePickerClassName: RelDatePicker;
 		flex: 0 1 0;
 		background: transparent;
 		outline: none;
-		padding: $dInputVPadding 0;
+		padding: 0;
+		box-sizing: content-box;
+		align-self: stretch;
 
 		&:first-child {
 			padding-left: $dInputHPadding;
