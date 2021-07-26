@@ -75,7 +75,9 @@ const RelDatePicker: React.FunctionComponent<RelDatePickerProps> = ({ className,
 		const { ref, state: [val] } = units[unit];
 		React.useEffect(() => {
 			ref.current.style.width = "0px";
+			ref.current.style.paddingLeft = "0px";
 			ref.current.style.width = ref.current.scrollWidth + "px";
+			ref.current.style.paddingLeft = "";
 		}, [val]);
 	});
 
