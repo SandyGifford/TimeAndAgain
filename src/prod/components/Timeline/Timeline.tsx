@@ -19,7 +19,8 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 		width: window.innerWidth,
 	});
 	const deltaT = offsets.width * msPerPixel;
-	const [timeline] = React.useContext(TimelineContext).useState();
+	const timelineCtx = React.useContext(TimelineContext);
+	const [timeline] = timelineCtx.useState();
 	const [time, dt] = timeState.useTime();
 	const animTime = ReactUtils.useAnimateValue(time, Math.abs(dt) > 500 ? 100 : 0);
 
@@ -57,6 +58,8 @@ const Timeline: React.FunctionComponent<TimelineProps> = ({ className, msPerPixe
 				if (startTime > endMS || (startTime + duration) < startMS) return null;
 				return <TimelineEvent
 					className="Timeline__event"
+					eventId={id}
+					deleteById={timelineCtx.deleteById}
 					timelineLeftOffset={offsets.left}
 					timelineRightOffset={offsets.width + offsets.left}
 					event={event}

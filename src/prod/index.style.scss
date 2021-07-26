@@ -8,24 +8,3 @@ body {
 	margin: 0;
 	overflow: hidden;
 }
-
-button,
-select,
-input {
-	@include input;
-}
-
-select {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-}
-
-button {
-	cursor: pointer;
-	min-width: $dInputHeight;
-	padding: 0 0.3em;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}

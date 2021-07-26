@@ -10,6 +10,9 @@ export interface TimelineEventProps extends Omit<React.DetailedHTMLProps<React.H
 	msPerPixel: number;
 	timelineLeftOffset: number;
 	timelineRightOffset: number;
+	eventId: string;
+	// we pass the ID here redundantly so we can pass a static function into the component
+	deleteById(id: string): void;
 }
 
 const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
@@ -20,6 +23,8 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 	style,
 	timelineLeftOffset,
 	timelineRightOffset,
+	eventId,
+	deleteById,
 	...divProps
 }) => {
 	const bgColor = ReactUtils.useTransformedValue(color, color => {
@@ -29,6 +34,7 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 	});
 	const contentRef = React.useRef<HTMLDivElement>();
 	const [textEdges, setTextEdges] = React.useState({ left: 0, right: 0 });
+	const [rootHovered, setRootHovered] = React.useState(false);
 
 	React.useEffect(() => {
 		let left = 0;
@@ -49,6 +55,8 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 			width: (duration / msPerPixel),
 			...style,
 		}}
+		onMouseOver={() => setRootHovered(true)}
+		onMouseOut={() => setRootHovered(false)}
 		title={name}
 		className={BEMUtils.className("TimelineEvent", { merge: [className] })}>
 		<div className="TimelineEvent__content" ref={contentRef}>
@@ -59,6 +67,11 @@ const TimelineEvent: React.FunctionComponent<TimelineEventProps> = ({
 				}}>
 				{name}
 			</div>
+		</div>
+		<div className={BEMUtils.className("TimelineEvent__delete", { mods: { rootHovered } })}>
+			<button
+				className={BEMUtils.className("TimelineEvent__delete__button", { mods: { rootHovered } })}
+				onClick={() => deleteById(eventId)} />
 		</div>
 	</div>;
 };
