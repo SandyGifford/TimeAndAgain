@@ -2,6 +2,6 @@ import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000");
 socket.on("devBuildSuccess", () => {
-	window.location.reload(true);
+	window.location.reload();
 });
 // socket.on("devBuildFail", this.failure);
