@@ -2,7 +2,7 @@ import WSHelper from "../../prod/misc/WSHelper";
 import { DevSocketMessageDataMap } from "../typings/devSocketTypings";
 
 function socketConnect(): void {
-	const ws = new WebSocket("ws://localhost:8080");
+	const ws = new WebSocket(`ws://${location.hostname}:8080`);
 	const wsHelper = new WSHelper<DevSocketMessageDataMap>(ws);
 
 	ws.addEventListener("open", () => {
