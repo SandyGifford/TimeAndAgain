@@ -1,7 +1,7 @@
 import express from "express";
 import prodApp from "../../prod/server/prodApp";
 import webpack from "webpack";
-import WebSocket from "ws";
+import NodeWebSocket from "ws";
 import webpackConfig from "../webpack.config";
 import http from "http";
 import fs from "fs-extra";
@@ -14,7 +14,7 @@ const devApp = express();
 devApp.use(prodApp);
 
 const devServer = http.createServer(devApp);
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new NodeWebSocket.Server({ port: 8080 });
 
 const failDelegate = new EventDelegate<string[]>();
 const successDelegate = new EventDelegate<void>();

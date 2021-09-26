@@ -1,5 +1,6 @@
-import TimeState, { TimeStateTime } from "./TimeState";
+import BrowserTimeState from "./BrowserTimeState";
 import * as React from "react";
+import { TimeStateTime } from "./TimeState";
 
 export interface FantasyTimeStateYearSegment {
 	name: string;
@@ -86,7 +87,7 @@ function findYearSegmentIndex(dayOfYear: number, segments: FantasyTimeStateYearS
 	});
 }
 
-export default class FantasyTimeState extends TimeState {
+export default class FantasyTimeState extends BrowserTimeState {
 	public static get EPOCH_OFFSET(): number {
 		return FantasyTimeState.yearToMS(1970, DEFAULT_OPTIONS);
 	}
