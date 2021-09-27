@@ -76,11 +76,15 @@ export default class TimeState {
 	}
 
 	public addTime = (ms: number): void => {
+		// setTime undoes this math but filtering
+		// addTime through it makes it easier if
+		// we need to do more actions in setTime
+		// later
 		this.setTime(this.accumulatedTime + ms);
 	};
 
 	public setTime = (ms: number): void => {
-		this.trigger(ms);
+		this.trigger(ms - this.accumulatedTime);
 	};
 
 	public addListener = (listener: TimeStateListener, precision?: number): void => {
