@@ -1,13 +1,13 @@
 import BrowserTimeState from "./BrowserTimeState";
 import * as React from "react";
-import { TimeStateTime } from "./TimeState";
+import { TimeStateInit, TimeStateOptions, TimeStateTime } from "./TimeState";
 
 export interface FantasyTimeStateYearSegment {
 	name: string;
 	startDay: number;
 }
 
-export interface FantasyTimeStateOptions {
+export interface FantasyTimeStateOptions extends TimeStateOptions {
 	secondsPerMinute?: number;
 	minutesPerHour?: number;
 	hoursPerDay?: number;
@@ -15,7 +15,9 @@ export interface FantasyTimeStateOptions {
 	months?: FantasyTimeStateYearSegment[];
 	seasons?: FantasyTimeStateYearSegment[];
 	daysOfWeek?: string[];
-	startTime?: number | EssentialFantasyTimeStateData;
+}
+
+export interface FantasyTimeStateInit extends FantasyTimeStateOptions, TimeStateInit {
 }
 
 export interface RelativeFantasyTimeStateData {
@@ -68,7 +70,7 @@ const fantasyTimeStateDefaultSeasons: FantasyTimeStateYearSegment[] = [
 ];
 
 const DEFAULT_OPTIONS: Required<FantasyTimeStateOptions> = {
-	startTime: 0,
+	updateMS: undefined,
 	secondsPerMinute: 60,
 	minutesPerHour: 60,
 	hoursPerDay: 24,
@@ -88,6 +90,14 @@ function findYearSegmentIndex(dayOfYear: number, segments: FantasyTimeStateYearS
 }
 
 export default class FantasyTimeState extends BrowserTimeState {
+	protected static separateInit<T extends FantasyTimeStateInit>(init: T): {
+		init: Omit<FantasyTimeStateInit, keyof FantasyTimeStateOptions>;
+		rest: Omit<T, keyof Omit<FantasyTimeStateInit, keyof FantasyTimeStateOptions>>
+	} {
+		// we don't add anything extra to FantasyTimeStateInit yet so this can just pass through
+		return super.separateInit(init);
+	}
+
 	public static get EPOCH_OFFSET(): number {
 		return FantasyTimeState.yearToMS(1970, DEFAULT_OPTIONS);
 	}
@@ -265,15 +275,11 @@ export default class FantasyTimeState extends BrowserTimeState {
 		};
 	}
 
-	private options: FantasyTimeStateOptions;
+	options: FantasyTimeStateOptions;
 
-	constructor(options: FantasyTimeStateOptions = {}) {
-		super(
-			typeof options.startTime === "object" ?
-				FantasyTimeState.fantasyTimeToMS(options.startTime) :
-				(options.startTime || 0)
-		);
-
+	constructor(init: FantasyTimeStateInit = {}) {
+		super(init);
+		const { rest: options } = FantasyTimeState.separateInit(init);
 		this.options = FantasyTimeState.completeOptions(options);
 	}
 

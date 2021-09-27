@@ -9,7 +9,37 @@ interface TimeStateHandler {
 	listener: TimeStateListener;
 }
 
+export interface TimeStateOptions {
+	updateMS?: number;
+}
+
+export interface TimeStateInit extends TimeStateOptions {
+	startTime?: number;
+	playOnInit?: boolean;
+	handlers?: (TimeStateListener | { handler: TimeStateListener; precision: number; })[];
+}
+
 export default class TimeState {
+	public static makeTimer(func: () => void, ms?: number): () => void {
+		const id = setInterval(func, ms);
+		return () => clearTimeout(id);
+	}
+
+	private static getRealTime(): number {
+		return (new Date()).getTime();
+	}
+
+	protected static separateInit<T extends TimeStateInit>(init: T): {
+		init: Omit<TimeStateInit, keyof TimeStateOptions>;
+		rest: Omit<T, keyof Omit<TimeStateInit, keyof TimeStateOptions>>
+	} {
+		const { handlers, playOnInit, startTime, ...rest } = init;
+		return {
+			init: { handlers, playOnInit, startTime },
+			rest,
+		}
+	}
+
 	public get playing() : boolean {
 		return this._playing;
 	}
@@ -19,18 +49,30 @@ export default class TimeState {
 	}
 
 	protected handlers: TimeStateHandler[] = [];
-	protected frameRef: number;
+	protected timerStoper: () => void;
 	protected _playing = false;
 	protected playingDelegate = new EventDelegate();
 	protected accumulatedTime = 0;
 	protected lastTime = 0;
+	protected options: TimeStateOptions = {};
 
-	constructor(
-		protected animFunc: typeof requestAnimationFrame,
-		protected cancelAnimFunc: typeof cancelAnimationFrame,
-		startTime?: number
-	) {
+	constructor(init: TimeStateInit = {}) {
+		const {
+			init: { startTime, playOnInit, handlers },
+			rest: options
+		} = TimeState.separateInit(init);
+
+		this.options = {
+			updateMS: 500,
+			...options,
+		};
+
+		(handlers || []).forEach(obj => {
+			if (typeof obj === "function") this.addListener(obj);
+			else this.addListener(obj.handler, obj.precision)
+		});
 		this.accumulatedTime = startTime;
+		if (playOnInit) this.start();
 	}
 
 	public addTime = (ms: number): void => {
@@ -59,43 +101,38 @@ export default class TimeState {
 
 	public start = (): void => {
 		if (this._playing) return;
+		if (this.timerStoper) this.timerStoper(); // this should never trigger
 		this._playing = true;
 		this.playingDelegate.trigger(true);
-		this.lastTime = performance.now();
-		this.runFrame();
+		this.lastTime = TimeState.getRealTime();
+		this.timerStoper = TimeState.makeTimer(this.frame, 500);
 	};
 
 	public stop = (): void => {
 		// record one last time
-		this.cancelAnimFunc(this.frameRef);
-		this.runFrame();
+		this.frame();
 		this._playing = false;
+		if (this.timerStoper) this.timerStoper();
 		this.playingDelegate.trigger(false);
-		this.cancelAnimFunc(this.frameRef);
 	};
 
-	private runFrame = (): void => {
-		if (this._playing) this.frameRef = this.animFunc(this.frame);
+	private frame = (): void => {
+		const time = TimeState.getRealTime();
+		const dt = time - this.lastTime;
+		this.lastTime = time;
+		this.trigger(dt);
 	};
 
-	private frame: FrameRequestCallback = timeSinceRun => {
-		const dt = timeSinceRun - this.lastTime;
-		this.lastTime = timeSinceRun;
-		this.trigger(this.accumulatedTime + dt);
-		this.runFrame();
-	};
-
-	private trigger(time: number): void {
-		const dt = time - this.accumulatedTime;
-		this.accumulatedTime = time;
+	private trigger(dt: number): void {
+		this.accumulatedTime += dt;
 
 		this.handlers.forEach(handler => {
 			const { listener, precision, lastTime } = handler;
-			const flooredTime = Math.floor(time / precision);
+			const flooredTime = Math.floor(this.accumulatedTime / precision);
 			const flooredLastTime = Math.floor(lastTime / precision);
 
 			if (flooredTime !== flooredLastTime) {
-				listener([time, dt]);
+				listener([this.accumulatedTime, dt]);
 				handler.lastTime = flooredTime * precision;
 			}
 		});

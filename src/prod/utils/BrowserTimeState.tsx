@@ -1,13 +1,13 @@
 import * as React from "react";
 import { StateDelegate } from "./StateDelegate";
-import TimeState, { TimeStateListener, TimeStateTime } from "./TimeState";
+import TimeState, { TimeStateInit, TimeStateListener, TimeStateTime } from "./TimeState";
 
 export default class BrowserTimeState extends TimeState {
 	protected static context = React.createContext<BrowserTimeState>(null);
 
-	public static useNewTimeState(startTime?: number): BrowserTimeState {
+	public static useNewTimeState(init?: TimeStateInit): BrowserTimeState {
 		const firstFrame = React.useRef(true);
-		const state = React.useRef(firstFrame.current ? new BrowserTimeState(startTime) : null);
+		const state = React.useRef(firstFrame.current ? new BrowserTimeState(init) : null);
 		firstFrame.current = false;
 		return state.current;
 	}
@@ -38,8 +38,8 @@ export default class BrowserTimeState extends TimeState {
 
 	protected playingDelegate = new StateDelegate(false);
 
-	constructor(startTime?: number) {
-		super(requestAnimationFrame.bind(window), cancelAnimationFrame.bind(window), startTime);
+	constructor(init?: TimeStateInit) {
+		super(init);
 	}
 
 	public useTime = (precision = 0): TimeStateTime => {
