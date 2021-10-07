@@ -89,6 +89,11 @@ export default class TimeState {
 		this.trigger(0);
 	};
 
+	public setPlaying = (playing: boolean): void => {
+		if (playing) this.start();
+		else this.stop();
+	};
+
 	public addPlayingListener = (listener: TimeStatePlayingListener): void => {
 		this.playingDelegate.listen(listener);
 	};

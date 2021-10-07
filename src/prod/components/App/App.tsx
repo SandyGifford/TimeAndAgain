@@ -30,9 +30,12 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 	const ws = ReactUtils.useWS<ProdSocketMessageDataMap>(`ws://${location.hostname}:8081`);
 
 	React.useEffect(() => {
-		ws.addMessageListener("full", data => {
-			timeState.setTime(data.ms);
+		ws.addMessageListener("full", ({ ms, playing, options }) => {
+			timeState.setTime(ms);
+			timeState.setPlaying(playing);
+			timeState.setOptions(options);
 		});
+		ws.addMessageListener("ms", ms => timeState.setTime(ms));
 	}, []);
 
 	return <TimelineContext.Provider

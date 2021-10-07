@@ -284,7 +284,7 @@ export default class FantasyTimeState extends BrowserTimeState {
 	}
 
 	public setOptions = (options: FantasyTimeStateOptions): void => {
-		this.options = options;
+		this.options = FantasyTimeState.completeOptions(options);
 	};
 
 	public getMonths = (): FantasyTimeStateYearSegment[] => {
