@@ -1,7 +1,8 @@
-import EventDelegate from "./EventDelegate";
+import EventDelegate, { EventDelegateListener } from "./EventDelegate";
 
 export type TimeStateTime = [number, number];
 export type TimeStateListener = (time: TimeStateTime) => void;
+export type TimeStatePlayingListener = EventDelegateListener<boolean>;
 
 interface TimeStateHandler {
 	precision?: number;
@@ -51,7 +52,7 @@ export default class TimeState {
 	protected handlers: TimeStateHandler[] = [];
 	protected timerStoper: () => void;
 	protected _playing = false;
-	protected playingDelegate = new EventDelegate();
+	protected playingDelegate = new EventDelegate<boolean>();
 	protected accumulatedTime = 0;
 	protected lastTime = 0;
 	protected options: TimeStateOptions = {};
@@ -84,7 +85,16 @@ export default class TimeState {
 	};
 
 	public setTime = (ms: number): void => {
-		this.trigger(ms - this.accumulatedTime);
+		this.accumulatedTime = ms;
+		this.trigger(0);
+	};
+
+	public addPlayingListener = (listener: TimeStatePlayingListener): void => {
+		this.playingDelegate.listen(listener);
+	};
+
+	public removePlayingListener = (listener: TimeStatePlayingListener): void => {
+		this.playingDelegate.stopListen(listener);
 	};
 
 	public addListener = (listener: TimeStateListener, precision?: number): void => {

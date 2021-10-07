@@ -1,8 +1,18 @@
 import React from "react";
-
+import { WSHelperClient} from "../misc/WSHelper";
 
 let lastIdNum = 1;
 export default class ReactUtils {
+	public static useWS<M>(url: string, retryMS?: number): WSHelperClient<M> {
+		const ws = ReactUtils.useMakeOnce(() => new WSHelperClient<M>(url, retryMS));
+
+		React.useEffect(() => {
+			return () => ws.close();
+		})
+
+		return ws;
+	}
+
 	public static useResizeObserver<T extends HTMLElement>(update: () => void, ref: React.MutableRefObject<T> = React.useRef()): React.MutableRefObject<T> {
 		let resizeObserver: ResizeObserver;
 

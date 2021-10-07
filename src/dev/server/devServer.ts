@@ -7,8 +7,8 @@ import http from "http";
 import fs from "fs-extra";
 import path from "path";
 import EventDelegate from "../../prod/utils/EventDelegate";
-import WSHelper from "../../prod/misc/WSHelper";
 import { DevSocketMessageDataMap } from "../typings/devSocketTypings";
+import WSHelperServer from "../../prod/server/WSHelperServer";
 
 const devApp = express();
 devApp.use(prodApp);
@@ -20,7 +20,7 @@ const failDelegate = new EventDelegate<string[]>();
 const successDelegate = new EventDelegate<void>();
 
 wss.on("connection", (ws, req) => {
-	const wsHelper = new WSHelper<DevSocketMessageDataMap>(ws);
+	const wsHelper = new WSHelperServer<DevSocketMessageDataMap>(ws);
 
 	function sendFail(errors: string[]): void {
 		console.log(`========> sending failure to ${req.socket.remoteAddress}`);
