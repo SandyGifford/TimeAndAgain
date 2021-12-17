@@ -89,12 +89,12 @@ export class WSHelperClient<M> extends WSHelper<M> {
 				this.open();
 			}, this.retryMS);
 		});
-	
+
 		this.ws.addEventListener("error", e => {
 			console.error(`Socket to ${this.url} encountered error: `, (e as any).message, "Closing socket");
 			this.close();
 		});
-	}
+	};
 
 	public close = (): void => {
 		if (!this.ws) return;
@@ -105,15 +105,15 @@ export class WSHelperClient<M> extends WSHelper<M> {
 	public addEventListener<T extends WSClientEventType>(type: T, callback: (e: WebSocketEventMap[T]) => void): void {
 		if (!this.listeners[type]) this.listeners[type] = [];
 		const listeners = this.listeners[type];
-		if (listeners.indexOf(callback) === -1) listeners.push(callback);;
+		if (listeners.indexOf(callback) === -1) listeners.push(callback);
 		super.addEventListener(type, callback);
-	};
+	}
 
 	public removeEventListener<T extends WSClientEventType>(type: T, callback: (e: WebSocketEventMap[T]) => void): void {
 		if (!this.listeners[type]) this.listeners[type] = [];
 		const listeners = this.listeners[type];
-		const index = listeners.indexOf(callback)
+		const index = listeners.indexOf(callback);
 		if (index !== -1) listeners.splice(index, 1);
 		super.removeEventListener(type, callback);
-	};
+	}
 }
