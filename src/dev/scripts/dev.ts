@@ -8,5 +8,8 @@ ws.addMessageListener("buildFail", errors => {
 });
 
 ws.addMessageListener("buildSuccess", () => {
+	console.log("eyyyyy");
 	window.location.reload();
 });
+
+ws.open();

@@ -1,8 +1,7 @@
 import express from "express";
 import { ProdSocketMessageDataMap } from "../typings/prodSocketTypings";
-import { EventDelegateListener } from "../utils/EventDelegate";
 import FantasyTimeState from "../utils/FantasyTimeState";
-import TimeState, { TimeStateListener } from "../utils/TimeState";
+import TimeState, { TimeStateListener, TimeStatePlayingListener } from "../utils/TimeState";
 import { WSSAssistantServer } from "ws-assistant-server";
 /*[
 	{
@@ -60,23 +59,28 @@ const ts = new TimeState({
 	playOnInit: true,
 });
 
-app.post("play", () => ts.start());
-app.post("stop", () => ts.stop());
+wss.onConnected((client, ip) => {
+	console.log(`${ip} connected to API`);
 
-wss.onConnected(client => {
 	client.send("full", {
 		options: {},
 		ms: ts.time,
 		playing: ts.playing,
 	});
 
-	const playListener: EventDelegateListener<boolean> = playing => client.send("playing", playing);
+	const playListener: TimeStatePlayingListener = playing => client.send("playing", playing);
 	const msListener: TimeStateListener = ([ms]) => client.send("ms", ms);
 
 	ts.addPlayingListener(playListener);
 	ts.addListener(msListener);
 
+	client.addMessageListener("playing", playing => {
+		ts.setPlaying(playing);
+		wss.sendToAllExcept("playing", [client], playing);
+	});
+
 	client.addEventListener("close", () => {
+		console.log(`${ip} disconnected from API`);
 		ts.removePlayingListener(playListener);
 		ts.removeListener(msListener);
 	});

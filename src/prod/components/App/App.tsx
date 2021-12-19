@@ -37,8 +37,11 @@ const App: React.FunctionComponent<AppProps> = ({ className }) => {
 		});
 
 		ws.addMessageListener("ms", ms => timeState.setTime(ms));
+		ws.addMessageListener("playing", playing => timeState.setPlaying(playing, false));
 
 		timeState.addPlayingListener(playing => ws.send("playing", playing));
+
+		ws.open();
 	}, []);
 
 	return <TimelineContext.Provider

@@ -19,6 +19,8 @@ const failDelegate = new EventDelegate<string[]>();
 const successDelegate = new EventDelegate<void>();
 
 wss.onConnected((client, ip) => {
+	console.log(`${ip} connected to dev server`);
+
 	function sendFail(errors: string[]): void {
 		console.log(`========> sending failure to ${ip}`);
 		client.send("buildFail", errors);
@@ -33,6 +35,7 @@ wss.onConnected((client, ip) => {
 	successDelegate.listen(sendSuccess);
 
 	client.addEventListener("close", () => {
+		console.log(`${ip} disconnected from dev server`);
 		failDelegate.stopListen(sendFail);
 		successDelegate.stopListen(sendSuccess);
 	});

@@ -8,7 +8,7 @@ export default class ReactUtils {
 
 		React.useEffect(() => {
 			return () => { ws.close(); };
-		});
+		}, []);
 
 		return ws;
 	}

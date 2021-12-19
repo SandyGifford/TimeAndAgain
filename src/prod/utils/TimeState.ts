@@ -26,10 +26,6 @@ export default class TimeState {
 		return () => clearTimeout(id);
 	}
 
-	private static getRealTime(): number {
-		return (new Date()).getTime();
-	}
-
 	protected static separateInit<T extends TimeStateInit>(init: T): {
 		init: Omit<TimeStateInit, keyof TimeStateOptions>;
 		rest: Omit<T, keyof Omit<TimeStateInit, keyof TimeStateOptions>>
@@ -38,7 +34,11 @@ export default class TimeState {
 		return {
 			init: { handlers, playOnInit, startTime },
 			rest,
-		}
+		};
+	}
+
+	private static getRealTime(): number {
+		return (new Date()).getTime();
 	}
 
 	public get playing() : boolean {
@@ -60,7 +60,7 @@ export default class TimeState {
 	constructor(init: TimeStateInit = {}) {
 		const {
 			init: { startTime, playOnInit, handlers },
-			rest: options
+			rest: options,
 		} = TimeState.separateInit(init);
 
 		this.options = {
@@ -70,7 +70,7 @@ export default class TimeState {
 
 		(handlers || []).forEach(obj => {
 			if (typeof obj === "function") this.addListener(obj);
-			else this.addListener(obj.handler, obj.precision)
+			else this.addListener(obj.handler, obj.precision);
 		});
 		this.accumulatedTime = startTime;
 		if (playOnInit) this.start();
@@ -89,9 +89,9 @@ export default class TimeState {
 		this.trigger(0);
 	};
 
-	public setPlaying = (playing: boolean): void => {
-		if (playing) this.start();
-		else this.stop();
+	public setPlaying = (playing: boolean, notify = true): void => {
+		if (playing) this.start(notify);
+		else this.stop(notify);
 	};
 
 	public addPlayingListener = (listener: TimeStatePlayingListener): void => {
@@ -118,21 +118,21 @@ export default class TimeState {
 		if (index !== -1) this.handlers.splice(index, 1);
 	};
 
-	public start = (): void => {
+	public start = (notify = true): void => {
 		if (this._playing) return;
 		if (this.timerStoper) this.timerStoper(); // this should never trigger
 		this._playing = true;
-		this.playingDelegate.trigger(true);
+		if (notify) this.playingDelegate.trigger(true);
 		this.lastTime = TimeState.getRealTime();
 		this.timerStoper = TimeState.makeTimer(this.frame, 500);
 	};
 
-	public stop = (): void => {
+	public stop = (notify = true): void => {
 		// record one last time
 		this.frame();
 		this._playing = false;
 		if (this.timerStoper) this.timerStoper();
-		this.playingDelegate.trigger(false);
+		if (notify) this.playingDelegate.trigger(false);
 	};
 
 	private frame = (): void => {

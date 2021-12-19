@@ -90,19 +90,11 @@ function findYearSegmentIndex(dayOfYear: number, segments: FantasyTimeStateYearS
 }
 
 export default class FantasyTimeState extends BrowserTimeState {
-	protected static separateInit<T extends FantasyTimeStateInit>(init: T): {
-		init: Omit<FantasyTimeStateInit, keyof FantasyTimeStateOptions>;
-		rest: Omit<T, keyof Omit<FantasyTimeStateInit, keyof FantasyTimeStateOptions>>
-	} {
-		// we don't add anything extra to FantasyTimeStateInit yet so this can just pass through
-		return super.separateInit(init);
-	}
+	protected static fantasyContext = React.createContext<FantasyTimeState>(null);
 
 	public static get EPOCH_OFFSET(): number {
 		return FantasyTimeState.yearToMS(1970, DEFAULT_OPTIONS);
 	}
-
-	protected static fantasyContext = React.createContext<FantasyTimeState>(null);
 
 	public static useNewFantasyTimeState(options?: Partial<FantasyTimeStateOptions>): FantasyTimeState {
 		const firstFrame = React.useRef(true);
@@ -245,6 +237,14 @@ export default class FantasyTimeState extends BrowserTimeState {
 	public static Provider(props: {children: React.ReactNode, options?: FantasyTimeStateOptions}): React.ReactElement {
 		const state = FantasyTimeState.useNewFantasyTimeState(props.options);
 		return state.Provider(props);
+	}
+
+	protected static separateInit<T extends FantasyTimeStateInit>(init: T): {
+		init: Omit<FantasyTimeStateInit, keyof FantasyTimeStateOptions>;
+		rest: Omit<T, keyof Omit<FantasyTimeStateInit, keyof FantasyTimeStateOptions>>
+	} {
+		// we don't add anything extra to FantasyTimeStateInit yet so this can just pass through
+		return super.separateInit(init);
 	}
 
 	private static completeRelative(fTime: RelativeFantasyTimeStateData): Required<RelativeFantasyTimeStateData> {
