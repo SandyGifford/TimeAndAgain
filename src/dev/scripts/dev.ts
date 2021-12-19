@@ -1,7 +1,7 @@
-import { WSHelperClient } from "../../prod/misc/WSHelper";
+import { WSAssistantClient } from "ws-assistant-client";
 import { DevSocketMessageDataMap } from "../typings/devSocketTypings";
 
-const ws = new WSHelperClient<DevSocketMessageDataMap>(`ws://${location.hostname}:8080`);
+const ws = new WSAssistantClient<DevSocketMessageDataMap>(`ws://${location.hostname}:8080`);
 
 ws.addMessageListener("buildFail", errors => {
 	console.error("Fail", errors);

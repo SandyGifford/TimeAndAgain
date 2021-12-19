@@ -1,14 +1,14 @@
 import React from "react";
-import { WSHelperClient} from "../misc/WSHelper";
+import { WSAssistantClient } from "ws-assistant-client";
 
 let lastIdNum = 1;
 export default class ReactUtils {
-	public static useWS<M>(url: string, retryMS?: number): WSHelperClient<M> {
-		const ws = ReactUtils.useMakeOnce(() => new WSHelperClient<M>(url, retryMS));
+	public static useWS<M>(url: string, retryMS?: number): WSAssistantClient<M> {
+		const ws = ReactUtils.useMakeOnce(() => new WSAssistantClient<M>(url, retryMS));
 
 		React.useEffect(() => {
-			return () => ws.close();
-		})
+			return () => { ws.close(); };
+		});
 
 		return ws;
 	}

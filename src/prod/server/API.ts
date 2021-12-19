@@ -1,12 +1,10 @@
 import express from "express";
-import NodeWebSocket from "ws";
 import { ProdSocketMessageDataMap } from "../typings/prodSocketTypings";
 import { EventDelegateListener } from "../utils/EventDelegate";
 import FantasyTimeState from "../utils/FantasyTimeState";
 import TimeState, { TimeStateListener } from "../utils/TimeState";
-import WSHelperServer from "./WSHelperServer";
-
-/*[ 
+import { WSSAssistantServer } from "ws-assistant-server";
+/*[
 	{
 		name: "red event",
 		color: "red",
@@ -54,7 +52,7 @@ import WSHelperServer from "./WSHelperServer";
 const START_TIME = FantasyTimeState.EPOCH_OFFSET + (new Date().getTime());
 
 const app = express();
-const wss = new NodeWebSocket.Server({ port: 8081 });
+const wss = new WSSAssistantServer<ProdSocketMessageDataMap>(8081);
 
 const ts = new TimeState({
 	updateMS: 1000,
@@ -65,22 +63,20 @@ const ts = new TimeState({
 app.post("play", () => ts.start());
 app.post("stop", () => ts.stop());
 
-wss.on("connection", (ws, req) => {
-	const wsHelper = new WSHelperServer<ProdSocketMessageDataMap>(ws);
-
-	wsHelper.send("full", {
+wss.onConnected(client => {
+	client.send("full", {
 		options: {},
 		ms: ts.time,
 		playing: ts.playing,
 	});
 
-	const playListener: EventDelegateListener<boolean> = playing => wsHelper.send("playing", playing);
-	const msListener: TimeStateListener = ([ms]) => wsHelper.send("ms", ms);
+	const playListener: EventDelegateListener<boolean> = playing => client.send("playing", playing);
+	const msListener: TimeStateListener = ([ms]) => client.send("ms", ms);
 
 	ts.addPlayingListener(playListener);
 	ts.addListener(msListener);
 
-	ws.addEventListener("close", () => {
+	client.addEventListener("close", () => {
 		ts.removePlayingListener(playListener);
 		ts.removeListener(msListener);
 	});
