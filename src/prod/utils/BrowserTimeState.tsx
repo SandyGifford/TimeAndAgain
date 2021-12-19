@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StateDelegate } from "./StateDelegate";
+import { ReactStateDelegate } from "react-state-delegate";
 import TimeState, { TimeStateInit, TimeStateListener, TimeStateTime } from "./TimeState";
 
 export default class BrowserTimeState extends TimeState {
@@ -36,7 +36,7 @@ export default class BrowserTimeState extends TimeState {
 		return state.usePlaying();
 	}
 
-	protected playingDelegate = new StateDelegate(false);
+	protected playingDelegate = new ReactStateDelegate(false);
 
 	constructor(init?: TimeStateInit) {
 		super(init);

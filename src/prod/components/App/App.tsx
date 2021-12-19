@@ -5,7 +5,7 @@ import { ProdSocketMessageDataMap } from "../../typings/prodSocketTypings";
 import BEMUtils from "../../utils/BEMUtils";
 import FantasyTimeState from "../../utils/FantasyTimeState";
 import ReactUtils from "../../utils/ReactUtils";
-import UIListDelegate from "../../utils/UIListDelegate";
+import { UIListDelegate } from "react-state-delegate";
 import AutoCalendar from "../AutoCalendar/AutoCalendar";
 import Icon from "../Icon/Icon";
 import QuickEvent from "../QuickEvent/QuickEvent";

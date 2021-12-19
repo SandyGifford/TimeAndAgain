@@ -1,4 +1,4 @@
-import EventDelegate, { EventDelegateListener } from "./EventDelegate";
+import { EventDelegate, EventDelegateListener } from "event-delegate";
 
 export type TimeStateTime = [number, number];
 export type TimeStateListener = (time: TimeStateTime) => void;

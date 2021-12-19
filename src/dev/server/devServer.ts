@@ -5,7 +5,7 @@ import webpackConfig from "../webpack.config";
 import http from "http";
 import fs from "fs-extra";
 import path from "path";
-import EventDelegate from "../../prod/utils/EventDelegate";
+import { EventDelegate } from "event-delegate";
 import { DevSocketMessageDataMap } from "../typings/devSocketTypings";
 import { WSSAssistantServer } from "ws-assistant-server";
 
